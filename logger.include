@@ -6,6 +6,7 @@
 #{
 #	echo "BASH_SOURCE[0]=${BASH_SOURCE[0]}"
 #}
+
 function log()
 {
 	local _datestamp="$(date +'%Y/%m/%d')"
@@ -71,6 +72,25 @@ function fatal()
 {
 	log --fatal "$@"
 }
+
+
+function test_logger()
+{
+	debug   test debug
+	info    test info
+	warning test warning
+	error   test error
+	fatal   test fatal
+}
+
+function logger_main()
+{
+	test_logger
+}
+
+[ "${1^^}" == "MAIN" ] && logger_main
+
+
 
 #unset _CONFIG
 #unset _INDEX
