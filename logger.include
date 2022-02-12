@@ -1,0 +1,100 @@
+#!/bin/bash
+
+#echo "BASH_SOURCE[0]=${BASH_SOURCE[0]}"
+
+#function test()
+#{
+#	echo "BASH_SOURCE[0]=${BASH_SOURCE[0]}"
+#}
+function log()
+{
+	local _datestamp="$(date +'%Y/%m/%d')"
+	local _timestamp="$(date +'%H:%M:%S')"
+	local _message="${*}"
+	local _tag
+	local _who_width=
+
+	case ${1,,} in
+		--debug|--info|--warning|--error|--fatal)
+			_tag="${1:2}"
+			_tag="${_tag^^}"
+			[ $_tag == WARNING ] && _tag=WARN
+			printf -v _tag "%-5.5s" $_tag
+			shift
+			_message="${*}"
+		;;
+	esac
+	# stderr
+	[ $0 = -bash ] && {
+		_who="${BASH_SOURCE[0]}"
+	} || {
+		_who="$0"
+	}
+	#echo "_who=$_who"
+	#echo "[log] \$0='$0'"
+	#echo "[log] BASH_SOURCE[0]='${BASH_SOURCE[0]}'"
+	#echo "[log] BASH_SOURCE[1]='${BASH_SOURCE[1]}'"
+	#echo "[$_datestamp][$_timestamp]$_tag $_message" >&2
+	# printf -v _tag "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
+	local _formatted_who
+	printf -v _formatted_who "%16.16s" "$(basename $_who)"
+	#echo "$_datestamp | $_timestamp | $(basename $_who) | $_tag | $_message" >&2
+	echo "$_datestamp | $_timestamp | $_formatted_who | $_tag | $_message" >&2
+}
+
+function debug()
+{
+	log --debug "$@"
+}
+
+function info()
+{
+	log --info "$@"
+}
+
+function warning()
+{
+	log --warning "$@"
+}
+
+function warn()
+{
+	log --warning "$@"
+}
+
+function error()
+{
+	log --error "$@"
+}
+
+function fatal()
+{
+	log --fatal "$@"
+}
+
+#unset _CONFIG
+#unset _INDEX
+#declare -A _CONFIG
+#declare -a _INDEX
+#
+#function setcfg()
+#{
+#	_CONFIG[$1]="$2"
+#	_INDEX+=("$1")
+#}
+#
+#function getcfg()
+#{
+#	echo "${_CONFIG[$1]}"
+#}
+#
+#
+#function dumpcfg()
+#{
+#	#for k in "${!_CONFIG[@]}"
+#	for k in "${_INDEX[@]}"
+#	do
+#		info "$(printf "%-15.15s\t%s" $k "${_CONFIG[$k]}")"
+#	done
+#}
+
