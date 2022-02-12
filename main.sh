@@ -17,7 +17,19 @@ function count_files()
 	return $total
 }
 
-count_files mp4 mkv
+# count_files mp4 mkv
+
+function countfiles()
+{
+	pattern=""
+	for ext
+	do
+		pattern="$pattern *.$ext"
+	done
+	total="$(ls $pattern 2>/dev/null | wc -l)"
+	return $total
+}
+countfiles mp4 mkv
 total_videos=$?
 [ $total_videos -eq 0 ] && { fatal "no video files"; exit; }
 [ $total_videos -gt 1 ] && { fatal "too many video files: $total_videos"; exit; }
