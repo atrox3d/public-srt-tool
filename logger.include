@@ -1,13 +1,41 @@
 #!/bin/bash
 
 __LOGGER_DEBUG=no
+
+function __DEBUG_ENABLE()
+{
+	__LOGGER_DEBUG=yes
+}
+
+function __DEBUG_DISABLE()
+{
+	__LOGGER_DEBUG=no
+}
+
+function __DEBUG_TOGGLE()
+{
+	case "${__LOGGER_DEBUG}" in
+		yes)
+			__LOGGER_DEBUG=no
+		;;
+		no)
+			__LOGGER_DEBUG=yes
+		;;
+		*)
+			echo "${BASH_SOURCE[0]} | FATAL | unknown __DEBUG status : '$_LOGGER_DEBUG'"
+			exit 1
+		;;
+	esac
+}
+
 #
 #	echoes all parameters if _LOGGER_DEBUG == yes
 #
 function __DEBUG()
 {
-	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "${*}"
+	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}"
 }
+
 
 function log()
 {
@@ -49,17 +77,21 @@ function log()
 		;;
 	esac
 	
+	__DEBUG "\$0 = $0"
+	__DEBUG "\${BASH_SOURCE[0]} = ${BASH_SOURCE[0]}"
 	# stderr
 	[ $0 = -bash ] && {
 		_who="${BASH_SOURCE[0]}"
 	} || {
 		_who="$0"
 	}
-	#echo "_who=$_who"
-	#echo "[log] \$0='$0'"
-	#echo "[log] BASH_SOURCSE[0]='${BASH_SOURCE[0]}'"
-	#echo "[log] BASH_SOURCE[1]='${BASH_SOURCE[1]}'"
-	#echo "[$_datestamp][$_timestamp]$_level $_message" >&2
+	
+	__DEBUG "_who=$_who"
+	__DEBUG "[log] \$0='$0'"
+	__DEBUG "[log] BASH_SOURCE[0]='${BASH_SOURCE[0]}'"
+	__DEBUG "[log] BASH_SOURCE[1]='${BASH_SOURCE[1]}'"
+	# echo "[$_datestamp][$_timestamp]$_level $_message" >&2
+	exit
 	# printf -v _level "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
 	local _formatted_who
 	printf -v _formatted_who "%16.16s" "$(basename $_who)"
