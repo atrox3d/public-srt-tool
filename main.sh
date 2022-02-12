@@ -2,4 +2,5 @@
 . logger.include
 
 info "START"
+#log wrong x
 

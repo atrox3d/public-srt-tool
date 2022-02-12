@@ -1,30 +1,54 @@
 #!/bin/bash
 
-#echo "BASH_SOURCE[0]=${BASH_SOURCE[0]}"
-
-#function test()
-#{
-#	echo "BASH_SOURCE[0]=${BASH_SOURCE[0]}"
-#}
+__LOGGER_DEBUG=no
+#
+#	echoes all parameters if _LOGGER_DEBUG == yes
+#
+function __DEBUG()
+{
+	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "${*}"
+}
 
 function log()
 {
+	#
+	#	date and time
+	#
 	local _datestamp="$(date +'%Y/%m/%d')"
 	local _timestamp="$(date +'%H:%M:%S')"
-	local _message="${*}"
-	local _tag
-	local _who_width=
-
-	case ${1,,} in
+	#
+	#	extract tag and message
+	#
+	local _level="${1}"
+	local _message="${*:2}"
+	local _who_width=0
+	
+	__DEBUG "$_level: $_message"
+	#
+	#	check level name
+	#
+	case ${_level,,} in
 		--debug|--info|--warning|--error|--fatal)
-			_tag="${1:2}"
-			_tag="${_tag^^}"
-			[ $_tag == WARNING ] && _tag=WARN
-			printf -v _tag "%-5.5s" $_tag
-			shift
-			_message="${*}"
+			#
+			#	remove "__" from level name and capitalize it
+			#
+			_level="${1:2}"
+			_level="${_level^^}"
+			#
+			#	normalize warn
+			#
+			[ $_level == WARNING ] && _level=WARN
+			#
+			#	format level
+			#
+			printf -v _level "%-5.5s" $_level
+		;;
+		*)
+			echo "${BASH_SOURCE[0]} | FATAL | unknown level name: '$_level'"
+			exit 1
 		;;
 	esac
+	
 	# stderr
 	[ $0 = -bash ] && {
 		_who="${BASH_SOURCE[0]}"
@@ -33,14 +57,14 @@ function log()
 	}
 	#echo "_who=$_who"
 	#echo "[log] \$0='$0'"
-	#echo "[log] BASH_SOURCE[0]='${BASH_SOURCE[0]}'"
+	#echo "[log] BASH_SOURCSE[0]='${BASH_SOURCE[0]}'"
 	#echo "[log] BASH_SOURCE[1]='${BASH_SOURCE[1]}'"
-	#echo "[$_datestamp][$_timestamp]$_tag $_message" >&2
-	# printf -v _tag "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
+	#echo "[$_datestamp][$_timestamp]$_level $_message" >&2
+	# printf -v _level "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
 	local _formatted_who
 	printf -v _formatted_who "%16.16s" "$(basename $_who)"
-	#echo "$_datestamp | $_timestamp | $(basename $_who) | $_tag | $_message" >&2
-	echo "$_datestamp | $_timestamp | $_formatted_who | $_tag | $_message" >&2
+	#echo "$_datestamp | $_timestamp | $(basename $_who) | $_level | $_message" >&2
+	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
 }
 
 function debug()
@@ -81,6 +105,7 @@ function test_logger()
 	warning test warning
 	error   test error
 	fatal   test fatal
+	log		wrong_level test
 }
 
 function logger_main()
