@@ -81,6 +81,9 @@ function log()
 	__DEBUG "\${BASH_SOURCE[0]} = ${BASH_SOURCE[0]}"
 
 	[ $0 = bash ] && {
+		#
+		#	sourcing from command line, force this script
+		#
 		_who="${BASH_SOURCE[0]}"
 	} || {
 		_who="$0"
