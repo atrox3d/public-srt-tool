@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+function count_files()
+{
+	extensions=($@)
+	total=0
+	for ext in ${extensions[@]}
+	do
+		_total=$(ls *.${ext} 2>/dev/null | wc -l)
+		total=$((total + _total))
+	done
+	return $total
+}
+
+# count_files mp4 mkv
+
+function countfiles()
+{
+	pattern=""
+	for ext
+	do
+		pattern="$pattern *.$ext"
+	done
+	files="$(ls $pattern 2>/dev/null)"
+	total="$(ls $pattern 2>/dev/null | wc -l)"
+	echo $files
+	return $total
+}
