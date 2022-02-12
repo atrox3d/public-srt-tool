@@ -1,5 +1,5 @@
 #!/bin/bash
 . logger.include
 
-info info
+info "START"
 
