@@ -49,7 +49,7 @@ function log()
 	#
 	local _level="${1}"
 	local _message="${*:2}"
-	local _who_width=0
+	# local _who_width=0
 	
 	__DEBUG "$_level: $_message"
 	#
@@ -79,23 +79,16 @@ function log()
 	
 	__DEBUG "\$0 = $0"
 	__DEBUG "\${BASH_SOURCE[0]} = ${BASH_SOURCE[0]}"
-	# stderr
-	[ $0 = -bash ] && {
+
+	[ $0 = bash ] && {
 		_who="${BASH_SOURCE[0]}"
 	} || {
 		_who="$0"
 	}
 	
-	__DEBUG "_who=$_who"
-	__DEBUG "[log] \$0='$0'"
-	__DEBUG "[log] BASH_SOURCE[0]='${BASH_SOURCE[0]}'"
-	__DEBUG "[log] BASH_SOURCE[1]='${BASH_SOURCE[1]}'"
-	# echo "[$_datestamp][$_timestamp]$_level $_message" >&2
-	exit
 	# printf -v _level "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
 	local _formatted_who
 	printf -v _formatted_who "%16.16s" "$(basename $_who)"
-	#echo "$_datestamp | $_timestamp | $(basename $_who) | $_level | $_message" >&2
 	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
 }
 
