@@ -20,8 +20,9 @@ function count_files()
 count_files mp4 mkv
 total_videos=$?
 [ $total_videos -eq 0 ] && { fatal "no video files"; exit; }
-[ $total_videos -gt 0 ] && { fatal "no video files"; exit; }
-	
+[ $total_videos -gt 1 ] && { fatal "too many video files: $total_videos"; exit; }
+
+
 
 # total_videos=${#videos[@]}
 # info "total videos: $total_videos"
