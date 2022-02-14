@@ -1,30 +1,41 @@
 #!/bin/bash
+
+param="$1"
+set --
 . logger.include
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 function getfiles()
 {
-	path="$1"
+	local path="$1"
+	shift
+	local sep="$1"
+	shift
 	pushd "$path" &> /dev/null || { echo fatal "path $path does not exist"; exit; }
-		shift
-		pattern=""
+		local pattern=""
+		local ext
 		for ext
 		do
 			pattern="$pattern *.$ext"
 		done
-		
-		__DEBUG "pattern: $pattern"
+
 		shopt -s nullglob
-		x=($pattern)
+		local files=($pattern)
 		shopt -u nullglob
-		echo "$(join_by , "${x[@]}")"
+
+		echo "$(join_by "$sep" "${files[@]}")"
+	popd
 }
 
-IFS=',' read -r -a files <<< "$(getfiles . mp4 mkv txt)"
-info "${files[@]}"
-for file in "${files[@]}"
-do
-	info $file
-done
-info ${#files[@]}
+if [ "${param,,}" == main ]
+then
+	sep="," 
+	IFS="$sep" read -r -a files <<< "$(getfiles . "$sep" mp4 mkv txt)"
+	info "${files[@]}"
+	for file in "${files[@]}"
+	do
+		info $file
+	done
+	info ${#files[@]}
+fi
