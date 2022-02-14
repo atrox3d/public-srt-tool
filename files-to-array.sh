@@ -18,20 +18,13 @@ function getfiles()
 		shopt -s nullglob
 		x=($pattern)
 		shopt -u nullglob
-		# __DEBUG ${x[@]}
-		# __DEBUG "${x[@]}"
-		# __DEBUG ${#x[@]}
-		# declare -p x >&2
 		echo "$(join_by , "${x[@]}")"
-		# echo "${x[@]}"
-		# return ${#x[@]}
 }
 
-files="$(getfiles . mp4 mkv txt)"
-info $files
-IFS=',' read -r -a files <<< "$files"
+IFS=',' read -r -a files <<< "$(getfiles . mp4 mkv txt)"
 info "${files[@]}"
 for file in "${files[@]}"
 do
-	echo $file
+	info $file
 done
+info ${#files[@]}
