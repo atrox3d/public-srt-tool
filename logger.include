@@ -33,7 +33,7 @@ function __DEBUG_TOGGLE()
 #
 function __DEBUG()
 {
-	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}"
+	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}" &> /dev/stderr
 }
 
 
