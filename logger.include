@@ -72,7 +72,7 @@ function log()
 			printf -v _level "%-5.5s" $_level
 		;;
 		*)
-			echo "${BASH_SOURCE[0]} | FATAL | unknown level name: '$_level'"
+			echo "${BASH_SOURCE[0]} | FATAL | unknown level name: '$_level'"  >&2
 			exit 1
 		;;
 	esac

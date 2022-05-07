@@ -25,18 +25,22 @@ function countfiles()
 		pattern="$pattern *.$ext"
 	done
 
+	info "path=$path"
+	info "pattern=$pattern"
 
-	shopt -s nullglob
-	x=($pattern)
-	shopt -u nullglob
-	echo ${x[@]} >&2
-	echo "${x[@]}" >&2
-	echo ${#x[@]} >&2
-	declare -p x >&2
+	pushd "$path"
+		shopt -s nullglob
+		x=($pattern)
+		shopt -u nullglob
+		echo ${x[@]} >&2
+		echo "${x[@]}" >&2
+		echo ${#x[@]} >&2
+		declare -p x >&2
 
-	echo "${x[@]}"
-	return ${#x[@]}
-	exit
-	total="$(ls $pattern 2>/dev/null | wc -l)"
+		echo "${x[@]}"
+		return ${#x[@]}
+		exit
+		total="$(ls $pattern 2>/dev/null | wc -l)"
+	popd
 	return $total
 }

@@ -3,8 +3,9 @@
 . files.include
 
 info "START"
+# __DEBUG_ENABLE
 
-video_files=($(countfiles . mp4 mkv))
+video_files=($(countfiles ./movie mp4 mkv))
 echo "${video_files[@]}"
 echo "${#video_files[@]}"
 exit
