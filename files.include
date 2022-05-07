@@ -24,58 +24,18 @@ function countfiles()
 	do
 		pattern="$pattern *.$ext"
 	done
-	#
-	#	1
-	#
-	info 'files=("$(ls $pattern 2>/dev/null)")'
-	files=("$(ls $pattern 2>/dev/null)")
-	
-	info "\$files   | " $files
-	info "\"\$files\" |" "$files"
-
-	info "\${files[*]}" ${files[*]}
-	info "\${#files[*]}" ${#files[*]}
-
-	info "\"\${files[*]}\"" "${files[*]}"
-	info "\"\${#files[*]}\"" "${#files[*]}"
-
-	info "\${files[@]}" ${files[@]}
-	info "\${#files[@]}" ${#files[@]}
-
-	info "\"\${files[@]}\"" "${files[@]}"
-	info "\"\${#files[@]}\"" "${#files[@]}"
-
-	info "#############################################################################"
-
-	#
-	#	2
-	#
-	info 'files=($(ls $pattern 2>/dev/null))'
-	files=($(ls $pattern 2>/dev/null))
-	
-	info "\$files   | " $files
-	info "\"\$files\" |" "$files"
-
-	info "\${files[*]}" ${files[*]}
-	info "\${#files[*]}" ${#files[*]}
-
-	info "\"\${files[*]}\"" "${files[*]}"
-	info "\"\${#files[*]}\"" "${#files[*]}"
-
-	info "\${files[@]}" ${files[@]}
-	info "\${#files[@]}" ${#files[@]}
-
-	info "\"\${files[@]}\"" "${files[@]}"
-	info "\"\${#files[@]}\"" "${#files[@]}"
 
 
-	x=(*.mp4 *.txt)
+	shopt -s nullglob
+	x=($pattern)
 	shopt -u nullglob
-	echo ${x[@]}
-	echo ${#x[@]}
-	declare -p x
+	echo ${x[@]} >&2
+	echo "${x[@]}" >&2
+	echo ${#x[@]} >&2
+	declare -p x >&2
 
-
+	echo "${x[@]}"
+	return ${#x[@]}
 	exit
 	total="$(ls $pattern 2>/dev/null | wc -l)"
 	return $total
