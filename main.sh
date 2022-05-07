@@ -4,9 +4,16 @@
 
 info "START"
 
-video_file="$(countfiles mp4 mkv)"
+video_files=($(countfiles . mp4 mkv))
+echo "${video_files[@]}"
+echo "${#video_files[@]}"
+exit
 total_videos=$?
-echo $video_file
+info "total video files: $total_videos"
+for file in "${video_files[@]}"
+do
+	info "video file       :  $file"
+done
 [ $total_videos -eq 0 ] && { fatal "no video files"; exit; }
 [ $total_videos -gt 1 ] && { fatal "too many video files: $total_videos"; exit; }
 
