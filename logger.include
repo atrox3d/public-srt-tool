@@ -1,5 +1,7 @@
 #!/bin/bash
 
+HERE="$(dirname ${BASH_SOURCE[0]})"
+NAME="$(basename ${BASH_SOURCE[0]})"
 __LOGGER_DEBUG=no
 
 function __DEBUG_ENABLE()
@@ -140,6 +142,8 @@ function logger_main()
 {
 	test_logger
 }
+
+info "${NAME} | ok"
 
 [ "${1^^}" == "MAIN" ] && logger_main
 
