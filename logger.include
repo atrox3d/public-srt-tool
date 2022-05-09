@@ -145,4 +145,7 @@ function logger_main()
 
 info "${NAME} | ok"
 
-[ "${1^^}" == "MAIN" ] && logger_main
+if [ "${1^^}" == "MAIN" ]
+then
+	logger_main
+fi
