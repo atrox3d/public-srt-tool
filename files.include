@@ -20,7 +20,10 @@ function countfiles()
 	info "path=$path"
 	info "pattern=$pattern"
 
-	pushd "$path" >/dev/null
+	pushd "$path" >/dev/null || {
+		fatal "path $path does not exist"
+		return 255
+	}
 		shopt -s nullglob
 		x=($pattern)
 		shopt -u nullglob
