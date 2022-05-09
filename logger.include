@@ -146,32 +146,3 @@ function logger_main()
 info "${NAME} | ok"
 
 [ "${1^^}" == "MAIN" ] && logger_main
-
-
-
-#unset _CONFIG
-#unset _INDEX
-#declare -A _CONFIG
-#declare -a _INDEX
-#
-#function setcfg()
-#{
-#	_CONFIG[$1]="$2"
-#	_INDEX+=("$1")
-#}
-#
-#function getcfg()
-#{
-#	echo "${_CONFIG[$1]}"
-#}
-#
-#
-#function dumpcfg()
-#{
-#	#for k in "${!_CONFIG[@]}"
-#	for k in "${_INDEX[@]}"
-#	do
-#		info "$(printf "%-15.15s\t%s" $k "${_CONFIG[$k]}")"
-#	done
-#}
-
