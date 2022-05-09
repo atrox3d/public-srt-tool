@@ -97,35 +97,12 @@ function log()
 	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
 }
 
-function debug()
-{
-	log --debug "$@"
-}
-
-function info()
-{
-	log --info "$@"
-}
-
-function warning()
-{
-	log --warning "$@"
-}
-
-function warn()
-{
-	log --warning "$@"
-}
-
-function error()
-{
-	log --error "$@"
-}
-
-function fatal()
-{
-	log --fatal "$@"
-}
+function debug()   { log --debug "$@";   }
+function info()    { log --info "$@";    }
+function warning() { log --warning "$@"; }
+function warn()    { log --warning "$@"; }
+function error()   { log --error "$@";   }
+function fatal()   { log --fatal "$@";   }
 
 
 function test_logger()
@@ -138,14 +115,9 @@ function test_logger()
 	log		wrong_level test
 }
 
-function logger_main()
-{
-	test_logger
-}
-
 info "${NAME} | ok"
 
 if [ "${1^^}" == "MAIN" ]
 then
-	logger_main
+	test_logger
 fi
