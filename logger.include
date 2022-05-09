@@ -97,7 +97,9 @@ function log()
 	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
 }
 
-function debug()   { log --debug   "$@"; }
+function debug(){
+	[ "${__LOGGER_DEBUG}" == "yes" ] &&	log --debug "$@"
+}
 function info()    { log --info    "$@"; }
 function warning() { log --warning "$@"; }
 function warn()    { log --warning "$@"; }
