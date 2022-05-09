@@ -1,5 +1,10 @@
 #!/bin/bash
 
+HERE="$(dirname ${BASH_SOURCE[0]})"
+ARGS="${@}"
+set --
+. "${HERE}/logger.include"
+NAME="$(basename ${BASH_SOURCE[0]})"
 
 function count_files()
 {
@@ -13,7 +18,7 @@ function count_files()
 	return $total
 }
 
-# count_files mp4 mkv
+# count_files path mp4 mkv ...
 
 function countfiles()
 {
@@ -32,10 +37,11 @@ function countfiles()
 		shopt -s nullglob
 		x=($pattern)
 		shopt -u nullglob
-		echo ${x[@]} >&2
+		
+		echo ${x[@]}   >&2
 		echo "${x[@]}" >&2
-		echo ${#x[@]} >&2
-		declare -p x >&2
+		echo ${#x[@]}  >&2
+		declare -p x   >&2
 
 		echo "${x[@]}"
 		return ${#x[@]}
@@ -44,3 +50,10 @@ function countfiles()
 	popd
 	return $total
 }
+
+info "${NAME} | ok"
+
+if [ "${1^^}" == MAIN ]
+then
+	info MAIN
+fi
