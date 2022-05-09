@@ -1,25 +1,12 @@
 #!/bin/bash
 
 HERE="$(dirname ${BASH_SOURCE[0]})"
-ARGS="${@}"
+ARGS=( "${@}" )
 set --
 . "${HERE}/logger.include"
 NAME="$(basename ${BASH_SOURCE[0]})"
 
-function count_files()
-{
-	extensions=($@)
-	total=0
-	for ext in ${extensions[@]}
-	do
-		_total=$(ls *.${ext} 2>/dev/null | wc -l)
-		total=$((total + _total))
-	done
-	return $total
-}
-
 # count_files path mp4 mkv ...
-
 function countfiles()
 {
 	path="$1"
@@ -33,27 +20,30 @@ function countfiles()
 	info "path=$path"
 	info "pattern=$pattern"
 
-	pushd "$path"
+	pushd "$path" >/dev/null
 		shopt -s nullglob
 		x=($pattern)
 		shopt -u nullglob
 		
-		echo ${x[@]}   >&2
-		echo "${x[@]}" >&2
-		echo ${#x[@]}  >&2
-		declare -p x   >&2
+		info ${x[@]}   >&2
+		info "${x[@]}" >&2
+		info ${#x[@]}  >&2
+		info "$(declare -p x)"
 
-		echo "${x[@]}"
-		return ${#x[@]}
-		exit
+		info "${x[@]}"
+		# return ${#x[@]}
+		# exit
 		total="$(ls $pattern 2>/dev/null | wc -l)"
-	popd
+	popd > /dev/null
 	return $total
 }
 
 info "${NAME} | ok"
 
-if [ "${1^^}" == MAIN ]
+main="${ARGS[0]^^}"
+ARGS=( "${ARGS[@]:1}" )
+if [ "${main}" == MAIN ]
 then
-	info MAIN
+	countfiles "${ARGS[@]}"
+	exit $?
 fi
