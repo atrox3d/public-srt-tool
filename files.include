@@ -1,16 +1,26 @@
 #!/bin/bash
 
+# get current path
 HERE="$(dirname ${BASH_SOURCE[0]})"
+
+# save parameters and reset them
 ARGS=( "${@}" )
 set --
+
+# source logger
 . "${HERE}/logger.include"
+
+# save this script name
 NAME="$(basename ${BASH_SOURCE[0]})"
 
-# count_files path mp4 mkv ...
+# countfiles path ext ext ext ...
 function countfiles()
 {
+	# save path parameter
 	path="$1"
 	shift
+	
+	# save extensions in pattern
 	pattern=""
 	for ext
 	do
@@ -20,12 +30,18 @@ function countfiles()
 	info "path=$path"
 	info "pattern=$pattern"
 
+	# move to path
 	pushd "$path" >/dev/null || {
 		fatal "path $path does not exist"
 		return 255
 	}
+	
+		# solve the missing file pattern expansion:
+		# 1.mp4 2.mp4 *.avi
 		shopt -s nullglob
+		# get files list
 		x=($pattern)
+		# reset
 		shopt -u nullglob
 		
 		info ${x[@]}   >&2
@@ -36,8 +52,11 @@ function countfiles()
 		info "${x[@]}"
 		# return ${#x[@]}
 		# exit
+		# count files
 		total="$(ls $pattern 2>/dev/null | wc -l)"
+	# back to workdir
 	popd > /dev/null
+
 	return $total
 }
 
