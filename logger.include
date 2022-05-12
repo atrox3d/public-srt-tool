@@ -3,17 +3,23 @@
 HERE="$(dirname ${BASH_SOURCE[0]})"
 NAME="$(basename ${BASH_SOURCE[0]})"
 __LOGGER_DEBUG=no
-
+#
+#
+#
 function __DEBUG_ENABLE()
 {
 	__LOGGER_DEBUG=yes
 }
-
+#
+#
+#
 function __DEBUG_DISABLE()
 {
 	__LOGGER_DEBUG=no
 }
-
+#
+#
+#
 function __DEBUG_TOGGLE()
 {
 	case "${__LOGGER_DEBUG}" in
@@ -29,7 +35,6 @@ function __DEBUG_TOGGLE()
 		;;
 	esac
 }
-
 #
 #	echoes all parameters if _LOGGER_DEBUG == yes
 #
@@ -37,8 +42,9 @@ function __DEBUG()
 {
 	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}" &> /dev/stderr
 }
-
-
+#
+#
+#
 function log()
 {
 	#
@@ -96,17 +102,23 @@ function log()
 	printf -v _formatted_who "%16.16s" "$(basename $_who)"
 	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
 }
-
+#
+#
+#
 function debug(){
 	[ "${__LOGGER_DEBUG}" == "yes" ] &&	log --debug "$@"
 }
+#
+# define level helper functions
+#
 function info()    { log --info    "$@"; }
 function warning() { log --warning "$@"; }
 function warn()    { log --warning "$@"; }
 function error()   { log --error   "$@"; }
 function fatal()   { log --fatal   "$@"; }
-
-
+#
+# test logger when sourced
+#
 function test_logger()
 {
 	debug   test debug
@@ -116,8 +128,9 @@ function test_logger()
 	fatal   test fatal
 	log		wrong_level test
 }
-
+#
 # source or run
+#
 if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
 	info "SOURCE | ${NAME} | ignoring params: ${@} | ok"
