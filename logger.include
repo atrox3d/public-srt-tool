@@ -117,9 +117,21 @@ function test_logger()
 	log		wrong_level test
 }
 
-info "${NAME} | ok"
-
-if [ "${1^^}" == "MAIN" ]
+# source or run
+if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
-	test_logger
+	info "SOURCE | ${NAME} | ignoring params: ${@} | ok"
+else
+	info "RUN | ${NAME} ${@}"
+	
+	# check if level function exists
+	LEVELS=(info warn warning error fatal)
+	LEVEL="${1}"
+	if echo "${LEVELS[@]}" | grep -qw "${LEVEL,,}"
+	then 
+		"${LEVEL}" "${@:2}"
+	else
+		fatal "unknown level | ${LEVEL^^}"
+		fatal "syntax: ${NAME} {info|warn|warning|error|fatal} message"
+	fi
 fi
