@@ -2,6 +2,8 @@
 
 HERE="$(dirname ${BASH_SOURCE[0]})"
 NAME="$(basename ${BASH_SOURCE[0]})"
+
+LEVELS=(debug info warn warning error fatal)
 __LOGGER_DEBUG=no
 #
 #
@@ -59,7 +61,7 @@ function log()
 	local _message="${*:2}"
 	# local _who_width=0
 	
-	__DEBUG "$_level: $_message"
+	# __DEBUG "$_level: $_message"
 	#
 	#	check level name
 	#
@@ -85,32 +87,28 @@ function log()
 		;;
 	esac
 	
-	__DEBUG "\$0 = $0"
+	__DEBUG "\${0} = ${0}"
 	__DEBUG "\${BASH_SOURCE[0]} = ${BASH_SOURCE[0]}"
 
-	[ $0 = bash ] && {
+	if [ "${0}" = "bash" ]
+	then
 		#
 		#	sourcing from command line, force this script
 		#
 		_who="${BASH_SOURCE[0]}"
-	} || {
-		_who="$0"
-	}
+	else
+		_who="${0}"
+	fi
 	
 	# printf -v _level "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
 	local _formatted_who
-	printf -v _formatted_who "%16.16s" "$(basename $_who)"
+	printf -v _formatted_who "%16.16s" "$(basename ${_who})"
 	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
-}
-#
-#
-#
-function debug(){
-	[ "${__LOGGER_DEBUG}" == "yes" ] &&	log --debug "$@"
 }
 #
 # define level helper functions
 #
+function debug()   { log --debug   "$@"; }
 function info()    { log --info    "$@"; }
 function warning() { log --warning "$@"; }
 function warn()    { log --warning "$@"; }
@@ -135,13 +133,12 @@ if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
 	info "SOURCE | ${NAME} | ignoring params: ${@} | ok"
 else
-	info "RUN | ${NAME} ${@}"
-	
+	# info "RUN | ${NAME} ${@}"
 	# check if level function exists
-	LEVELS=(info warn warning error fatal)
 	LEVEL="${1}"
 	if echo "${LEVELS[@]}" | grep -qw "${LEVEL,,}"
-	then 
+	then
+		__DEBUG_ENABLE
 		"${LEVEL}" "${@:2}"
 	else
 		fatal "unknown level | ${LEVEL^^}"
