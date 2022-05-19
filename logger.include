@@ -134,7 +134,7 @@ else
 		#
 		#	call the function
 		#
-		__DEBUG_ENABLE
+		# __DEBUG_ENABLE
 		"${LEVEL}" "${@:2}"
 	else
 		fatal "unknown level | ${LEVEL^^}"

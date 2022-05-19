@@ -1,5 +1,8 @@
 #!/bin/bash
 
-# . ./logger.include x
+echo \# running ./logger.include "${@}"
 ./logger.include "${@}"
 
+echo \# sourcing ./logger.include
+. ./logger.include x
+info "sourced"
