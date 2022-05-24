@@ -12,23 +12,25 @@ set --
 
 # save this script name
 NAME="$(basename ${BASH_SOURCE[0]})"
-
+#
 # countfiles path ext ext ext ...
+#
 function countfiles()
 {
 	# save path parameter
 	path="$1"
 	shift
-	
+
 	# save extensions in pattern
-	pattern=""
+	patterns=""
 	for ext
 	do
-		pattern="$pattern *.$ext"
+		patterns="$pattern *.$ext"
 	done
 
+	# display vars
 	info "path=$path"
-	info "pattern=$pattern"
+	info "pattern=$patterns"
 
 	# move to path
 	pushd "$path" >/dev/null || {
@@ -40,32 +42,28 @@ function countfiles()
 		# 1.mp4 2.mp4 *.avi
 		shopt -s nullglob
 		# get files list
-		x=($pattern)
+		files=($patterns)
 		# reset
 		shopt -u nullglob
 		
-		info ${x[@]}   >&2
-		info "${x[@]}" >&2
-		info ${#x[@]}  >&2
-		info "$(declare -p x)"
+		# info ${files[@]}
+		info "files: ${files[@]}"
+		total=${#files[@]}
+		info "total: $total"
+		info "array: $(declare -p files)"
 
-		info "${x[@]}"
-		# return ${#x[@]}
-		# exit
-		# count files
-		total="$(ls $pattern 2>/dev/null | wc -l)"
 	# back to workdir
 	popd > /dev/null
 
 	return $total
 }
-
-info "${NAME} | ok"
-
-main="${ARGS[0]^^}"
-ARGS=( "${ARGS[@]:1}" )
-if [ "${main}" == MAIN ]
+#
+# source or run
+#
+if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
+	info "SOURCE | ${NAME} | ignoring params: ${ARGS[@]} | ok"
+else
 	countfiles "${ARGS[@]}"
 	exit $?
 fi
