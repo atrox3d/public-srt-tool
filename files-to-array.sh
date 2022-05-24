@@ -5,7 +5,7 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 
 # save parameters and reset them
 ARGS=( "${@}" )
-param="$1"
+PARAM="${1}"
 set --
 
 # source logger
@@ -15,38 +15,55 @@ set --
 NAME="$(basename ${BASH_SOURCE[0]})"
 
 
-function join_by { local IFS="$1"; shift; echo "$*"; }
+function join_by { local IFS="${1}"; shift; echo "$*"; }
 
-function getfiles()
+function getfileslist()
 {
-	local path="$1"
+	local path="${1}"
 	shift
-	local sep="$1"
+	local sep="${1}"
 	shift
-	pushd "$path" &> /dev/null || { echo fatal "path $path does not exist"; exit; }
-		local pattern=""
+	
+	info "path: ${path}"
+	info "sep : ${sep}"
+	
+	pushd "${path}" &> /dev/null || { echo fatal "path ${path} does not exist"; exit; }
+		local patterns=""
 		local ext
 		for ext
 		do
-			pattern="$pattern *.$ext"
+			patterns="${patterns} *.$ext"
 		done
 
+		info "patterns: ${patterns}"
+
 		shopt -s nullglob
-		local files=($pattern)
+		local files=(${patterns})
+		info "files: (${files[@]})"
 		shopt -u nullglob
 
-		echo "$(join_by "$sep" "${files[@]}")"
-	popd
+		list="$(join_by "${sep}" "${files[@]}")"
+		info "${list}"
+		echo "${list}"
+	popd &> /dev/null
 }
 
-if [ "${param,,}" == main ]
+#
+# source or run
+#
+if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
+	info "SOURCE | ${NAME} | ignoring params: ${ARGS[@]} | ok"
+else
 	sep="," 
-	IFS="$sep" read -r -a files <<< "$(getfiles . "$sep" mp4 mkv txt)"
-	info "${files[@]}"
+	list="$(getfileslist . "${sep}" "${ARGS[@]}")"
+	info "list : ${list}"
+	# exit
+	IFS="$sep" read -r -a files <<< "${list}"
+	info "files: (${files[@]})"
 	for file in "${files[@]}"
 	do
-		info $file
+		info "file : ${file}"
 	done
 	info ${#files[@]}
 fi
