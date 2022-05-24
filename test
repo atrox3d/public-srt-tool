@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo \# running ./logger.include info testing testing
+./logger.include info testing testing
+
+echo \# sourcing ./logger.include
+. ./logger.include info testing testing
+info "sourced"
+
+echo \# running ./files.include . sh
+./files.include . sh
+
+echo \# sourcing ./files.include . sh
+. ./files.include . sh
+info "sourced"
+countfiles . sh
