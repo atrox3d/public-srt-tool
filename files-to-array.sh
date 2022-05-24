@@ -55,8 +55,9 @@ if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
 	info "SOURCE | ${NAME} | ignoring params: ${ARGS[@]} | ok"
 else
-	sep="," 
-	list="$(getfileslist . "${sep}" "${ARGS[@]}")"
+	sep=","
+	path="${ARGS[0]}"
+	list="$(getfileslist "${path}" "${sep}" "${ARGS[@]:1}")"
 	info "list : ${list}"
 	# exit
 	IFS="$sep" read -r -a files <<< "${list}"
