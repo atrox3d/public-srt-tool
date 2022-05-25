@@ -1,6 +1,6 @@
 #!/bin/bash
 . logger.include
-. files.include
+. countfiles.include
 
 info "START"
 # __DEBUG_ENABLE
