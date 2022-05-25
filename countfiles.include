@@ -25,12 +25,13 @@ function countfiles()
 	patterns=""
 	for ext
 	do
-		patterns="$pattern *.$ext"
+		# info "ext: ${ext}"
+		patterns="$patterns *.$ext"
 	done
 
 	# display vars
 	info "path=$path"
-	info "pattern=$patterns"
+	info "patterns=$patterns"
 
 	# move to path
 	pushd "$path" >/dev/null || {
@@ -64,6 +65,7 @@ if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
 	info "SOURCE | ${NAME} | ignoring params: ${ARGS[@]} | ok"
 else
+	info countfiles "${ARGS[@]}"
 	countfiles "${ARGS[@]}"
 	exit $?
 fi
