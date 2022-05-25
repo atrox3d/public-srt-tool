@@ -21,11 +21,25 @@ then
 	shift
 	
 	CUR_DIR="${BASE_DIR}"
-	VIDEO_COUNT=0
+	info ./countfiles.include "${CUR_DIR}" "${@}"
+	./countfiles.include "${CUR_DIR}" "${@}"
+	VIDEO_COUNT=$?
 	while [ ${VIDEO_COUNT} -eq 0 ]
 	do
-		info ./countfiles.include "${CUR_DIR}" "${@}"
-		./countfiles.include "${CUR_DIR}" "${@}"
+		shopt -s nullglob
+		# get dirs list
+		SUBDIRS=("${CUR_DIR}"/*/)
+		# reset
+		shopt -u nullglob
+		info "subdirs: ${SUBDIRS[@]}"
+		
+		for CUR_DIR in "${SUBDIRS[@]}"
+		do
+			info "CUR_DIR: ${CUR_DIR}"
+			info ./countfiles.include "${CUR_DIR}" "${@}"
+			./countfiles.include "${CUR_DIR}" "${@}"
+			VIDEO_COUNT=$?
+		done
 	done
 else
 	fatal "syntax: ${NAME} start-directory"
