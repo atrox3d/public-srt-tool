@@ -46,8 +46,9 @@ then
 	START_DIR="${1}"
 	FN="${2}"
 	FN_ARGS="${@:3}"
-	info "FN_ARGS | ${FN_ARGS[@]}"
-	# shift
+	info "START_DIR| ${START_DIR}"
+	info "FN       | ${FN}"
+	info "FN_ARGS  | ${FN_ARGS[@]}"
 	traverse "${START_DIR}" "${FN}" "${FN_ARGS[@]}"
 	
 else

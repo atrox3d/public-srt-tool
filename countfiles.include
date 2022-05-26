@@ -51,7 +51,7 @@ function countfiles()
 		info "files: ${files[@]}"
 		total=${#files[@]}
 		info "total: $total"
-		info "array: $(declare -p files)"
+		# info "array: $(declare -p files)"
 
 	# back to workdir
 	popd > /dev/null
