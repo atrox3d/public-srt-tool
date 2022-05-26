@@ -26,10 +26,12 @@ function traverse()
 		if [ -d "${node}" ]
 		then
 			info "DIR   | ${node}"
+			${fn} "${node}" "${args[@]}"
 			traverse "${node}" "${fn}" "${args[@]}"
 		elif [ -f "${node}" ]
 		then
-			${fn} "${node}" "${args[@]}"
+			# ${fn} "${node}" "${args[@]}"
+			:
 		# else
 			# echo "OTHER | ${node}"
 		fi
@@ -42,8 +44,8 @@ info "PARAMS | ${@:-no params}"
 if [ ${#} -gt 0 ]
 then
 	START_DIR="${1}"
-	FN=echo
-	FN_ARGS="${@:2}"
+	FN="${2}"
+	FN_ARGS="${@:3}"
 	info "FN_ARGS | ${FN_ARGS[@]}"
 	# shift
 	traverse "${START_DIR}" "${FN}" "${FN_ARGS[@]}"
