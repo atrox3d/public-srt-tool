@@ -41,17 +41,19 @@ function traverse()
 
 # check params
 info "PARAMS | ${@:-no params}"
-if [ ${#} -gt 0 ]
+if [ ${#} -ge 3 ]
 then
 	START_DIR="${1}"
-	FN="${2}"
-	FN_ARGS="${@:3}"
+	CONTEXT="${2}"
+	FN="${3}"
+	FN_ARGS="${@:4}"
 	info "START_DIR| ${START_DIR}"
+	info "CONTEXT  | ${CONTEXT}"
 	info "FN       | ${FN}"
 	info "FN_ARGS  | ${FN_ARGS[@]}"
-	traverse "${START_DIR}" "${FN}" "${FN_ARGS[@]}"
+	traverse "${START_DIR}" "${CONTEXT}" "${FN}" "${FN_ARGS[@]}"
 	
 else
-	fatal "syntax: ${NAME} start-directory"
+	fatal "syntax: ${NAME} start-directory files|dirs|all function/script args..."
 fi
 
