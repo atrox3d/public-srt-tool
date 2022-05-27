@@ -34,7 +34,7 @@ function traverse()
 		if [ -d "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
 			info "DIR   | ${node}"
-			${fn} "${node}" "${args[@]}"
+			"${fn}" "${node}" "${args[@]}"
 			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 		
@@ -42,7 +42,7 @@ function traverse()
 		if [ -f "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
 			info "DIR   | ${node}"
-			${fn} "${node}" "${args[@]}"
+			"${fn}" "${node}" "${args[@]}"
 			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 	done
