@@ -30,17 +30,20 @@ function traverse()
 	shopt -s nullglob
 	for node in "${path}"/*
 	do
-		if [ -d "${node}" ] && [ "${context}" == ALL -o "${context}" == DIRS ]
+		contexts=(ALL DIRS)
+		if [ -d "${node}" ] && grep -q "${context}" <<< "${contexts[@]}"
 		then
 			info "DIR   | ${node}"
 			${fn} "${node}" "${args[@]}"
 			traverse "${node}" "${context}" "${fn}" "${args[@]}"
-		elif [ -f "${node}" ]
+		fi
+		
+		contexts=(ALL FILES)
+		if [ -f "${node}" ] && grep -q "${context}" <<< "${contexts[@]}"
 		then
-			# ${fn} "${node}" "${args[@]}"
-			:
-		# else
-			# echo "OTHER | ${node}"
+			info "DIR   | ${node}"
+			${fn} "${node}" "${args[@]}"
+			traverse "${node}" "${context}" "${fn}" "${args[@]}"
 		fi
 	done
 	shopt -u nullglob
