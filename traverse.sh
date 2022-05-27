@@ -13,37 +13,50 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 # save this script name
 NAME="$(basename ${BASH_SOURCE[0]})"
 
+#
+#	traverse path function/script args
+#
+#	recursively traverse directories starting from path
+#	executing fn "current node" args
+#	where node is a file, a directory or both
+#	depending on scope
+#
 function traverse()
 {
-	local node
-	local path="${1}"
-	local scope="${2^^}"
-	local fn="${3}"
-	local args="${@:4}"
+	local node				# current object
+	local path="${1}"		# start path
+	local scope="${2^^}"	# DIRS|FILES|ALL
+	local fn="${3}"			# function or script
+	local args="${@:4}"		# arguments
 	
 	info "traverse() | path    | ${path}"
 	info "traverse() | scope   | ${scope}"
 	info "traverse() | fn      | ${fn}"
 	info "traverse() | args    | ${args[@]}"
-	# exit
 	
-	shopt -s nullglob
+	shopt -s nullglob			# expand only available files
 	for node in "${path}"/*
 	do
+		# only dirs
 		allowed_scopes=(ALL DIRS)
-		if [ -d "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
+		if [ -d "${node}" ]
 		then
-			info "DIR   | ${node}"
-			"${fn}" "${node}" "${args[@]}"
+			# run fn if in scope
+			if  grep -q "${scope}" <<< "${allowed_scopes[@]}"
+			then
+				info "DIR   | ${node}"
+				"${fn}" "${node}" "${args[@]}"
+			fi
+			# recurse anyway
 			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 		
+		# only files
 		allowed_scopes=(ALL FILES)
 		if [ -f "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
 			info "DIR   | ${node}"
 			"${fn}" "${node}" "${args[@]}"
-			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 	done
 	shopt -u nullglob
