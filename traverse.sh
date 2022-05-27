@@ -17,12 +17,12 @@ function traverse()
 {
 	local node
 	local path="${1}"
-	local context="${2^^}"
+	local scope="${2^^}"
 	local fn="${3}"
 	local args="${@:4}"
 	
 	info "traverse() | path    | ${path}"
-	info "traverse() | context | ${context}"
+	info "traverse() | scope   | ${scope}"
 	info "traverse() | fn      | ${fn}"
 	info "traverse() | args    | ${args[@]}"
 	# exit
@@ -30,20 +30,20 @@ function traverse()
 	shopt -s nullglob
 	for node in "${path}"/*
 	do
-		contexts=(ALL DIRS)
-		if [ -d "${node}" ] && grep -q "${context}" <<< "${contexts[@]}"
+		allowed_scopes=(ALL DIRS)
+		if [ -d "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
 			info "DIR   | ${node}"
 			${fn} "${node}" "${args[@]}"
-			traverse "${node}" "${context}" "${fn}" "${args[@]}"
+			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 		
-		contexts=(ALL FILES)
-		if [ -f "${node}" ] && grep -q "${context}" <<< "${contexts[@]}"
+		allowed_scopes=(ALL FILES)
+		if [ -f "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
 			info "DIR   | ${node}"
 			${fn} "${node}" "${args[@]}"
-			traverse "${node}" "${context}" "${fn}" "${args[@]}"
+			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
 		fi
 	done
 	shopt -u nullglob
@@ -54,17 +54,17 @@ info "PARAMS | ${@:-no params}"
 if [ ${#} -ge 3 ]
 then
 	START_DIR="${1}"
-	CONTEXT="${2}"
+	SCOPE="${2}"
 	FN="${3}"
 	FN_ARGS="${@:4}"
 	
 	info "START_DIR| ${START_DIR}"
-	info "CONTEXT  | ${CONTEXT}"
+	info "SCOPE    | ${SCOPE}"
 	info "FN       | ${FN}"
 	info "FN_ARGS  | ${FN_ARGS[@]}"
 	
-	info traverse "${START_DIR}" "${CONTEXT}" "${FN}" "${FN_ARGS[@]}"
-	traverse "${START_DIR}" "${CONTEXT}" "${FN}" "${FN_ARGS[@]}"
+	info traverse "${START_DIR}" "${SCOPE}" "${FN}" "${FN_ARGS[@]}"
+	traverse "${START_DIR}" "${SCOPE}" "${FN}" "${FN_ARGS[@]}"
 	
 else
 	fatal "syntax: ${NAME} start-directory files|dirs|all function/script args..."
