@@ -17,17 +17,24 @@ function traverse()
 {
 	local node
 	local path="${1}"
-	local fn="${2}"
-	local args="${@:3}"
+	local context="${2^^}"
+	local fn="${3}"
+	local args="${@:4}"
+	
+	info "traverse() | path    | ${path}"
+	info "traverse() | context | ${context}"
+	info "traverse() | fn      | ${fn}"
+	info "traverse() | args    | ${args[@]}"
+	# exit
 	
 	shopt -s nullglob
-	for node in "${1}"/*
+	for node in "${path}"/*
 	do
-		if [ -d "${node}" ]
+		if [ -d "${node}" ] && [ "${context}" == ALL -o "${context}" == DIRS ]
 		then
 			info "DIR   | ${node}"
 			${fn} "${node}" "${args[@]}"
-			traverse "${node}" "${fn}" "${args[@]}"
+			traverse "${node}" "${context}" "${fn}" "${args[@]}"
 		elif [ -f "${node}" ]
 		then
 			# ${fn} "${node}" "${args[@]}"
