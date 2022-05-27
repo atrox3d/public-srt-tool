@@ -47,10 +47,13 @@ then
 	CONTEXT="${2}"
 	FN="${3}"
 	FN_ARGS="${@:4}"
+	
 	info "START_DIR| ${START_DIR}"
 	info "CONTEXT  | ${CONTEXT}"
 	info "FN       | ${FN}"
 	info "FN_ARGS  | ${FN_ARGS[@]}"
+	
+	info traverse "${START_DIR}" "${CONTEXT}" "${FN}" "${FN_ARGS[@]}"
 	traverse "${START_DIR}" "${CONTEXT}" "${FN}" "${FN_ARGS[@]}"
 	
 else
