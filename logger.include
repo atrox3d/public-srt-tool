@@ -35,6 +35,52 @@ function __DEBUG()
 {
 	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}" &> /dev/stderr
 }
+
+
+
+
+declare -A LOG_LEVELS=( [debug]=0 [info]=1 [warning]=2 [error]=3 [fatal]=4 )
+DEFAULT_LEVEL="${LOG_LEVELS[debug]}"
+CURRENT_LEVEL="${DEFAULT_LEVEL}"
+
+
+function logger_setlevel()
+{
+	local level="${1:-UNSET}"
+
+	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
+		fatal "unknown level ${level}"
+		exit 255
+	}
+	CURRENT_LEVEL="${level}"
+}
+
+function logger_getlevelcode()
+{
+	local level="${1:-UNSET}"
+
+	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
+		fatal "unknown level ${level}"
+		exit 255
+	}
+	return "${LOG_LEVELS[${level}]}"
+}
+
+function logger_islevelenabled()
+{
+	local level="${1:-UNSET}"
+
+	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
+		fatal "unknown level ${level}"
+		exit 255
+	}
+
+	[ "${LOG_LEVELS[${level}]}" -ge "${LOG_LEVELS[${CURRENT_LEVEL}]}" ] && {
+		return 0
+	} || {
+		return 1
+	}
+}
 #
 #	general log function
 #
