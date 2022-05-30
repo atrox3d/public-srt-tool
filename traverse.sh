@@ -62,8 +62,9 @@ function traverse()
 	shopt -u nullglob
 }
 
+logger_setlevel debug
 # check params
-info "PARAMS | ${@:-no params}"
+debug "PARAMS | ${@:-no params}"
 
 if [ ${#} -ge 3 ]
 then
@@ -76,10 +77,10 @@ then
 	FN=""
 	FN_ARGS=""
 	
-	info "START_DIR| ${START_DIR}"
-	info "SCOPE    | ${SCOPE}"
-	info "FN       | ${FN}"
-	info "FN_ARGS  | ${FN_ARGS[@]}"
+	debug "START_DIR| ${START_DIR}"
+	debug "SCOPE    | ${SCOPE}"
+	debug "FN       | ${FN}"
+	debug "FN_ARGS  | ${FN_ARGS[@]}"
 	
 	while getopts "w:d:s:r:" OPT
 	do
@@ -88,7 +89,7 @@ then
 	shift "$((OPTIND-1))"
 	debug "ARGS: ${@}"
 	exit
-	info traverse "${@}"
+	debug traverse "${@}"
 	traverse "${@}"
 	
 else

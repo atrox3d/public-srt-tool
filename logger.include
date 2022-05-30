@@ -39,17 +39,18 @@ function __DEBUG()
 
 
 
-declare -A LOG_LEVELS=( [debug]=0 [info]=1 [warning]=2 [error]=3 [fatal]=4 )
-DEFAULT_LEVEL="${LOG_LEVELS[debug]}"
+declare -A LOG_LEVELS=( [DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3 [FATAL]=4 )
+DEFAULT_LEVEL="DEBUG"
 CURRENT_LEVEL="${DEFAULT_LEVEL}"
 
 
 function logger_setlevel()
 {
 	local level="${1:-UNSET}"
+	level="${level^^}"
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
-		fatal "unknown level ${level}"
+		fatal "logger_setlevel | unknown level ${level}"
 		exit 255
 	}
 	CURRENT_LEVEL="${level}"
@@ -58,9 +59,10 @@ function logger_setlevel()
 function logger_getlevelcode()
 {
 	local level="${1:-UNSET}"
+	level="${level^^}"
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
-		fatal "unknown level ${level}"
+		fatal "logger_getlevelcode | unknown level ${level}"
 		exit 255
 	}
 	return "${LOG_LEVELS[${level}]}"
@@ -69,12 +71,13 @@ function logger_getlevelcode()
 function logger_islevelenabled()
 {
 	local level="${1:-UNSET}"
+	level="${level^^}"
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
-		fatal "unknown level ${level}"
+		fatal "logger_islevelenabled | unknown level ${level}"
 		exit 255
 	}
-
+	
 	[ "${LOG_LEVELS[${level}]}" -ge "${LOG_LEVELS[${CURRENT_LEVEL}]}" ] && {
 		return 0
 	} || {
@@ -116,10 +119,11 @@ function log()
 			#
 			#	format level
 			#
+			logger_islevelenabled "${_level}" || return
 			printf -v _level "%-5.5s" $_level
 		;;
 		*)
-			echo "${BASH_SOURCE[0]} | FATAL | unknown level name: '$_level'"  >&2
+			echo "${BASH_SOURCE[0]} | FATAL | unknown level name: '${_level}'"  >&2
 			exit 1
 		;;
 	esac
@@ -140,7 +144,8 @@ function log()
 	# printf -v _level "[%*.*s]" $_log_square_width $_log_square_width "$OPTARG"
 	local _formatted_who
 	printf -v _formatted_who "%16.16s" "$(basename ${_who})"
-	echo "$_datestamp | $_timestamp | $_formatted_who | $_level | $_message" >&2
+	
+	echo "${_datestamp} | ${_timestamp} | ${_formatted_who} | ${_level} | ${_message}" >&2
 }
 #
 # level helpers
