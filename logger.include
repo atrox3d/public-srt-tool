@@ -62,10 +62,12 @@ function logger_setlevel()
 	do
 		if [ "${_level}" == "${level}" ]
 		then
-			_level="*${_level}"
+			_level="[${_level}"
 		fi
 		_levels="${_levels} ${_level}"
 	done
+	_levels="${_levels}]"
+	
 	super "logger_setlevel | ${_levels}"
 }
 

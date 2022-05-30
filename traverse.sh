@@ -62,7 +62,7 @@ function traverse()
 	shopt -u nullglob
 }
 
-logger_setlevel error
+logger_setlevel fatal
 # check params
 debug "PARAMS | ${@:-no params}"
 
