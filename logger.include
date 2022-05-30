@@ -54,6 +54,7 @@ function logger_setlevel()
 		exit 255
 	}
 	CURRENT_LEVEL="${level}"
+	info "logger_setlevel | ${level}"
 }
 
 function logger_getlevelcode()
