@@ -40,6 +40,7 @@ function __DEBUG()
 
 
 declare -A LOG_LEVELS=( [DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3 [FATAL]=4 [SUPER]=5)
+declare -a LOG_LEVELS_IDX=( DEBUG INFO WARNING ERROR FATAL SUPER )
 DEFAULT_LEVEL="DEBUG"
 CURRENT_LEVEL="${DEFAULT_LEVEL}"
 
@@ -54,7 +55,18 @@ function logger_setlevel()
 		exit 255
 	}
 	CURRENT_LEVEL="${level}"
-	super "logger_setlevel | ${level}"
+	
+	local _level 
+	local _levels=""
+	for _level in "${LOG_LEVELS_IDX[@]}"
+	do
+		if [ "${_level}" == "${level}" ]
+		then
+			_level="*${_level}"
+		fi
+		_levels="${_levels} ${_level}"
+	done
+	super "logger_setlevel | ${_levels}"
 }
 
 function logger_getlevelcode()
