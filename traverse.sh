@@ -35,7 +35,10 @@ function traverse()
 	debug "traverse() | scope   | ${scope}"
 	debug "traverse() | fn      | ${fn}"
 	debug "traverse() | args    | ${args[@]}"
+	
+	# TODO | add depth check
 	exit
+	
 	shopt -s nullglob			# expand only available files
 	for node in "${path}"/*
 	do
