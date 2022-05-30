@@ -64,6 +64,7 @@ function traverse()
 
 # check params
 info "PARAMS | ${@:-no params}"
+
 if [ ${#} -ge 3 ]
 then
 	START_DIR="${1}"
@@ -80,6 +81,11 @@ then
 	traverse "${START_DIR}" "${SCOPE}" "${FN}" "${FN_ARGS[@]}"
 	
 else
-	fatal "syntax: ${NAME} start-directory files|dirs|all function/script args..."
+	fatal "syntax: ${NAME} [OPTIONS] run-args"
+	fatal "  -w: where: start directory"
+	fatal "[ -d: depth: how many levels down: default all]"
+	fatal "  -s: scope: files|dirs|all"
+	fatal "  -r: run  : function/script"
+	fatal "           : script args..."
 fi
 
