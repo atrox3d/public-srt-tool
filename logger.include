@@ -39,7 +39,7 @@ function __DEBUG()
 
 
 
-declare -A LOG_LEVELS=( [DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3 [FATAL]=4 )
+declare -A LOG_LEVELS=( [DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3 [FATAL]=4 [SUPER]=5)
 DEFAULT_LEVEL="DEBUG"
 CURRENT_LEVEL="${DEFAULT_LEVEL}"
 
@@ -54,7 +54,7 @@ function logger_setlevel()
 		exit 255
 	}
 	CURRENT_LEVEL="${level}"
-	info "logger_setlevel | ${level}"
+	super "logger_setlevel | ${level}"
 }
 
 function logger_getlevelcode()
@@ -107,7 +107,7 @@ function log()
 	#	check level name
 	#
 	case ${_level,,} in
-		--debug|--info|--warning|--error|--fatal)
+		--debug|--info|--warning|--error|--fatal|--super)
 			#
 			#	remove "__" from level name and capitalize it
 			#
@@ -157,6 +157,7 @@ function warning() { log --warning "$@"; }
 function warn()    { log --warning "$@"; }
 function error()   { log --error   "$@"; }
 function fatal()   { log --fatal   "$@"; }
+function super()   { log --super   "$@"; }
 #
 # test logger when sourced
 #
