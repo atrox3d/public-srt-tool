@@ -67,18 +67,29 @@ info "PARAMS | ${@:-no params}"
 
 if [ ${#} -ge 3 ]
 then
-	START_DIR="${1}"
-	SCOPE="${2}"
-	FN="${3}"
-	FN_ARGS="${@:4}"
+	# START_DIR="${1}"
+	# SCOPE="${2}"
+	# FN="${3}"
+	# FN_ARGS="${@:4}"
+	START_DIR=""
+	SCOPE=""
+	FN=""
+	FN_ARGS=""
 	
 	info "START_DIR| ${START_DIR}"
 	info "SCOPE    | ${SCOPE}"
 	info "FN       | ${FN}"
 	info "FN_ARGS  | ${FN_ARGS[@]}"
 	
-	info traverse "${START_DIR}" "${SCOPE}" "${FN}" "${FN_ARGS[@]}"
-	traverse "${START_DIR}" "${SCOPE}" "${FN}" "${FN_ARGS[@]}"
+	while getopts "w:d:s:r:" OPT
+	do
+		debug "OPT: $OPT | OPTARG: $OPTARG | OPTIND: $OPTIND"
+	done
+	shift "$((OPTIND-1))"
+	debug "ARGS: ${@}"
+	exit
+	info traverse "${@}"
+	traverse "${@}"
 	
 else
 	fatal "syntax: ${NAME} [OPTIONS] run-args"
