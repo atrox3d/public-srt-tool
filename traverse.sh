@@ -25,15 +25,17 @@ function traverse()
 {
 	local node				# current object
 	local path="${1}"		# start path
-	local scope="${2^^}"	# DIRS|FILES|ALL
-	local fn="${3}"			# function or script
-	local args="${@:4}"		# arguments
+	local depth=${2}
+	local scope="${3^^}"	# DIRS|FILES|ALL
+	local fn="${4}"			# function or script
+	local args="${@:5}"		# arguments
 	
-	info "traverse() | path    | ${path}"
-	info "traverse() | scope   | ${scope}"
-	info "traverse() | fn      | ${fn}"
-	info "traverse() | args    | ${args[@]}"
-	
+	debug "traverse() | path    | ${path}"
+	debug "traverse() | depth   | ${depth}"
+	debug "traverse() | scope   | ${scope}"
+	debug "traverse() | fn      | ${fn}"
+	debug "traverse() | args    | ${args[@]}"
+	exit
 	shopt -s nullglob			# expand only available files
 	for node in "${path}"/*
 	do
@@ -73,11 +75,13 @@ then
 	# FN="${3}"
 	# FN_ARGS="${@:4}"
 	START_DIR=""
+	DEPTH=0
 	SCOPE=""
 	FN=""
-	FN_ARGS=""
+	FN_ARGS="${@}"
 	
 	debug "START_DIR| ${START_DIR}"
+	debug "DEPTH    | ${DEPTH}"
 	debug "SCOPE    | ${SCOPE}"
 	debug "FN       | ${FN}"
 	debug "FN_ARGS  | ${FN_ARGS[@]}"
@@ -85,12 +89,32 @@ then
 	while getopts "w:d:s:r:" OPT
 	do
 		debug "OPT: $OPT | OPTARG: $OPTARG | OPTIND: $OPTIND"
+		case "${OPT}" in
+			w)
+				START_DIR="${OPTARG}"
+			;;
+			d)
+				DEPTH=${OPTARG}
+			;;
+			s)
+				SCOPE="${OPTARG}"
+			;;
+			r)
+				FN="${OPTARG}"
+			;;
+		esac
 	done
 	shift "$((OPTIND-1))"
-	debug "ARGS: ${@}"
-	exit
-	debug traverse "${@}"
-	traverse "${@}"
+	FN_ARGS="${@}"
+	
+	debug "START_DIR| ${START_DIR}"
+	debug "DEPTH    | ${DEPTH}"
+	debug "SCOPE    | ${SCOPE}"
+	debug "FN       | ${FN}"
+	debug "FN_ARGS  | ${FN_ARGS[@]}"
+	# debug "ARGS: ${@}"
+	debug traverse "${START_DIR}" "${DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
+	traverse "${START_DIR}" "${DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
 	
 else
 	fatal "syntax: ${NAME} [OPTIONS] run-args"
