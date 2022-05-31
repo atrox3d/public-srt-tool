@@ -39,7 +39,7 @@ function traverse()
 	debug "traverse() | args      | ${args[@]}"
 	
 	# TODO | add max_depth check
-	exit
+	# exit
 	
 	shopt -s nullglob			# expand only available files
 	for node in "${path}"/*
@@ -55,14 +55,20 @@ function traverse()
 				"${fn}" "${node}" "${args[@]}"
 			fi
 			# recurse anyway
-			traverse "${node}" "${scope}" "${fn}" "${args[@]}"
+			((cur_depth++))
+			if [ ${max_depth} != ALL ] && [ ${cur_depth} -gt ${max_depth} ]
+			then
+				debug "reached max_depth ${max_depth}"
+			else
+				traverse "${node}" ${max_depth} ${cur_depth} "${scope}" "${fn}" "${args[@]}"
+			fi
 		fi
 		
 		# only files
 		allowed_scopes=(ALL FILES)
 		if [ -f "${node}" ] && grep -q "${scope}" <<< "${allowed_scopes[@]}"
 		then
-			info "DIR   | ${node}"
+			info "FILE  | ${node}"
 			"${fn}" "${node}" "${args[@]}"
 		fi
 	done
