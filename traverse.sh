@@ -25,18 +25,20 @@ function traverse()
 {
 	local node				# current object
 	local path="${1}"		# start path
-	local depth=${2}
-	local scope="${3^^}"	# DIRS|FILES|ALL
-	local fn="${4}"			# function or script
-	local args="${@:5}"		# arguments
+	local max_depth=${2}	# max possible depth
+	local cur_depth=${3}	# max possible depth
+	local scope="${4^^}"	# DIRS|FILES|ALL
+	local fn="${5}"			# function or script
+	local args="${@:6}"		# arguments
 	
-	debug "traverse() | path    | ${path}"
-	debug "traverse() | depth   | ${depth}"
-	debug "traverse() | scope   | ${scope}"
-	debug "traverse() | fn      | ${fn}"
-	debug "traverse() | args    | ${args[@]}"
+	debug "traverse() | path      | ${path}"
+	debug "traverse() | max_depth | ${max_depth}"
+	debug "traverse() | cur_depth | ${cur_depth}"
+	debug "traverse() | scope     | ${scope}"
+	debug "traverse() | fn        | ${fn}"
+	debug "traverse() | args      | ${args[@]}"
 	
-	# TODO | add depth check
+	# TODO | add max_depth check
 	exit
 	
 	shopt -s nullglob			# expand only available files
@@ -78,13 +80,14 @@ then
 	# FN="${3}"
 	# FN_ARGS="${@:4}"
 	START_DIR=""
-	DEPTH=0
+	MAX_DEPTH=ALL
+	CUR_DEPTH=0
 	SCOPE=""
 	FN=""
 	FN_ARGS="${@}"
 	
 	debug "START_DIR| ${START_DIR}"
-	debug "DEPTH    | ${DEPTH}"
+	debug "MAX_DEPTH| ${MAX_DEPTH}"
 	debug "SCOPE    | ${SCOPE}"
 	debug "FN       | ${FN}"
 	debug "FN_ARGS  | ${FN_ARGS[@]}"
@@ -97,7 +100,7 @@ then
 				START_DIR="${OPTARG}"
 			;;
 			d)
-				DEPTH=${OPTARG}
+				MAX_DEPTH=${OPTARG^^}
 			;;
 			s)
 				SCOPE="${OPTARG}"
@@ -111,18 +114,18 @@ then
 	FN_ARGS="${@}"
 	
 	debug "START_DIR| ${START_DIR}"
-	debug "DEPTH    | ${DEPTH}"
+	debug "MAX_DEPTH| ${MAX_DEPTH}"
 	debug "SCOPE    | ${SCOPE}"
 	debug "FN       | ${FN}"
 	debug "FN_ARGS  | ${FN_ARGS[@]}"
 	# debug "ARGS: ${@}"
-	debug traverse "${START_DIR}" "${DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
-	traverse "${START_DIR}" "${DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
+	debug traverse "${START_DIR}" "${MAX_DEPTH}" "${CUR_DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
+	traverse "${START_DIR}" "${MAX_DEPTH}" "${CUR_DEPTH}" "${SCOPE}" "${FN}" "${FN_ARGS}"
 	
 else
 	fatal "syntax: ${NAME} [OPTIONS] run-args"
 	fatal "  -w: where: start directory"
-	fatal "[ -d: depth: how many levels down: default all]"
+	fatal "[ -d: max_depth: how many levels down: default all]"
 	fatal "  -s: scope: files|dirs|all"
 	fatal "  -r: run  : function/script"
 	fatal "           : script args..."
