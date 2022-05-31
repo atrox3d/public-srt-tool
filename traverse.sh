@@ -75,7 +75,8 @@ function traverse()
 	shopt -u nullglob
 }
 
-logger_setlevel debug
+LOG_LEVEL=debug
+logger_setlevel "${LOG_LEVEL}"
 # check params
 debug "PARAMS | ${@:-no params}"
 
@@ -92,13 +93,14 @@ then
 	FN=""
 	FN_ARGS="${@}"
 	
+	super "LOG_LEVEL| ${LOG_LEVEL}"
 	debug "START_DIR| ${START_DIR}"
 	debug "MAX_DEPTH| ${MAX_DEPTH}"
 	debug "SCOPE    | ${SCOPE}"
 	debug "FN       | ${FN}"
 	debug "FN_ARGS  | ${FN_ARGS[@]}"
 	
-	while getopts "w:d:s:r:" OPT
+	while getopts "w:d:s:r:l:" OPT
 	do
 		debug "OPT: $OPT | OPTARG: $OPTARG | OPTIND: $OPTIND"
 		case "${OPT}" in
@@ -114,11 +116,17 @@ then
 			r)
 				FN="${OPTARG}"
 			;;
+			l)
+				LOG_LEVEL="${OPTARG^^}"
+			;;
 		esac
 	done
 	shift "$((OPTIND-1))"
 	FN_ARGS="${@}"
+
+	logger_setlevel "${LOG_LEVEL}"
 	
+	super "LOG_LEVEL| ${LOG_LEVEL}"
 	debug "START_DIR| ${START_DIR}"
 	debug "MAX_DEPTH| ${MAX_DEPTH}"
 	debug "SCOPE    | ${SCOPE}"
@@ -130,10 +138,11 @@ then
 	
 else
 	fatal "syntax: ${NAME} [OPTIONS] run-args"
-	fatal "  -w: where: start directory"
+	fatal "  -l: log level: debug info warning error fatal"
+	fatal "  -w: where    : start directory"
 	fatal "[ -d: max_depth: how many levels down: default all]"
-	fatal "  -s: scope: files|dirs|all"
-	fatal "  -r: run  : function/script"
-	fatal "           : script args..."
+	fatal "  -s: scope    : files|dirs|all"
+	fatal "  -r: run      : function/script"
+	fatal "               : script args..."
 fi
 

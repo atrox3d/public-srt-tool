@@ -49,6 +49,7 @@ function logger_setlevel()
 {
 	local level="${1:-UNSET}"
 	level="${level^^}"
+	[ "${level}" == "WARN" ] && level=WARNING
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
 		fatal "logger_setlevel | unknown level ${level}"
@@ -75,6 +76,7 @@ function logger_getlevelcode()
 {
 	local level="${1:-UNSET}"
 	level="${level^^}"
+	[ "${level}" == "WARN" ] && level=WARNING
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
 		fatal "logger_getlevelcode | unknown level ${level}"
@@ -87,6 +89,7 @@ function logger_islevelenabled()
 {
 	local level="${1:-UNSET}"
 	level="${level^^}"
+	[ "${level}" == "WARN" ] && level=WARNING
 
 	[ "${LOG_LEVELS[${level}]+EXISTS}" == EXISTS ] || {
 		fatal "logger_islevelenabled | unknown level ${level}"
@@ -130,7 +133,7 @@ function log()
 			#
 			#	normalize warn
 			#
-			[ $_level == WARNING ] && _level=WARN
+			[ "${_level}" == WARNING ] && _level=WARN
 			#
 			#	format level
 			#
