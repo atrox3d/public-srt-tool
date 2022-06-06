@@ -8,7 +8,14 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 # set --
 
 # source logger
-. "${HERE}/logger.include"
+{
+	. "${HERE}/logger.include" || {
+		. "${HERE}/../logger.include" || {
+			echo "FATAL | cannot find logger.include"
+			exit 255
+		}
+	}
+} 2> /dev/null
 
 # save this script name
 NAME="$(basename ${BASH_SOURCE[0]})"
