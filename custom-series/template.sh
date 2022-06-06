@@ -54,8 +54,31 @@ then
 				# ${subsdir} : /path/to/tv-serie-folder/01/season-1/episode01
 				# */         : 2_English.srt
 				#
-				# TODO: stop at first or add counter OR get the biggest
+				# TODO: stop at first or add counter 
 				#
+				#	OR
+				#
+				#		get the biggest
+				#
+				shopt -s nullglob			# ON | expand no match to null string
+				shopt -s nocaseglob			# ON | expand case insensitive
+				subtitles=( *english*.srt )	# capture srt files in array
+				filename=""
+				filesize=0
+				debug "subtitles: ${subtitles[@]}"
+				for _filename in "${subtitles[@]}"
+				do
+					_filesize=$(stat -c %s "${filename}")	# get current file size
+					debug "filename : ${filename}"
+					debug "filesize : ${filesize}"
+					debug "_filename: ${_filename}"
+					debug "_filesize: ${_filesize}"
+					[ ${_filesize} -gt ${filesize} ] && {	# if bigger
+						filename="${_filename}"				# update filename
+						filesize=${filesize}				# update filesize
+					}
+				done
+				
 				for srtfile in "${subsdir}"/*.srt
 				do
 					info "srtfile | ${srtfile}"				# 2_English.srt
@@ -75,6 +98,8 @@ then
 						info "PRINT | cp ${srtfile} ${season}/${filename}"
 					fi
 				done
+				shopt -u nullglob		# OFF | expand no match to null string
+				shopt -u nocaseglob		# OFF | expand case insensitive
 			done
 		# cd back
 		info popd
