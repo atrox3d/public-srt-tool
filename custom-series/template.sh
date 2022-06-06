@@ -62,11 +62,16 @@ then
 					#
 					# copy srt files at video files level
 					#
-					info "cp ${srtfile} ${season}/${filename}"
-					cp "${srtfile}" "${season}/${filename}" || {
-						fatal "error copying"
-						exit 255
-					}
+					if [ "${2^^}" == RUN ]
+					then
+						info "RUN | cp ${srtfile} ${season}/${filename}"
+						cp "${srtfile}" "${season}/${filename}" || {
+							fatal "error copying"
+							exit 255
+						}
+					else
+						info "PRINT | cp ${srtfile} ${season}/${filename}"
+					fi
 				done
 			done
 		# cd back
@@ -74,6 +79,6 @@ then
 		popd  &> /dev/null
 	done
 else
-	fatal "syntax | ${NAME} path"
+	fatal "syntax | ${NAME} path [run]"
 fi
 
