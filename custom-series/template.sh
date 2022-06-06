@@ -51,7 +51,7 @@ then
 				#
 				# TODO: stop at first or add counter
 				#
-				for srtfile in "${subsdir}"/*
+				for srtfile in "${subsdir}"/*.srt
 				do
 					info "srtfile | ${srtfile}"
 					#
