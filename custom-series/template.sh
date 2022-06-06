@@ -7,7 +7,9 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 # ARGS=( "${@}" )
 # set --
 
+#
 # source logger
+#
 {
 	. "${HERE}/logger.include" || {
 		. "${HERE}/../logger.include" || {
@@ -17,19 +19,22 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 	}
 } 2> /dev/null
 
-# save this script name
-NAME="$(basename ${BASH_SOURCE[0]})"
+NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 
+#
 # check params
+#
 info "PARAMS | ${@}"
 if [ ${#} -gt 0 ]
 then
 	#
-	# loop through seasons
+	# loop through seasons:
 	#
-	# ${1}/ : /e/VIDEO/serieTV ENG/ben 10/ 
-	# */    : 01/ 
-	# */    : Ben.10.S01.1080p.WEBRip.x265-RARBG/
+	# example: /path/to/tv-serie-folder/01/season-1/
+	#
+	# ${1}/ : /path/to/tv-series/
+	# */    : 01/
+	# */    : season-1/
 	#
 	for season in "${1}"/*/*/
 	do
@@ -37,30 +42,27 @@ then
 		pushd "${season}" &> /dev/null
 			#
 			# loop through subtitles subdirs
-			# ${season}/ : /e/VIDEO/serieTV ENG/ben 10/01/Ben.10.S01.1080p.WEBRip.x265-RARBG/
+			# ${season}/ : /path/to/tv-serie-folder/01/season-1/
 			# Subs/      : Subs/
-			# */         : Ben.10.S01E01.1080p.WEBRip.x265-RARBG/
+			# */         : season-1/
 			#
-			for subsdir in "${season}"/Subs/*/
+			for subsdir in "${season}"/[Ss]ubs/*/
 			do
 				info "subsdir | ${subsdir}"
 				#
 				# loop through srtfiles
-				# ${subsdir} : /e/VIDEO/serieTV ENG/ben 10/01/Ben.10.S01.1080p.WEBRip.x265-RARBG//Subs/Ben.10.S01E01.1080p.WEBRip.x265-RARBG//
+				# ${subsdir} : /path/to/tv-serie-folder/01/season-1/episode01
 				# */         : 2_English.srt
 				#
 				# TODO: stop at first or add counter
 				#
 				for srtfile in "${subsdir}"/*.srt
 				do
-					info "srtfile | ${srtfile}"
-					#
-					# Ben.10.S01E01.1080p.WEBRip.x265-RARBG.srt
-					#
-					filename="$(basename "${subsdir}").srt"
+					info "srtfile | ${srtfile}"				# 2_English.srt
+					filename="$(basename "${subsdir}").srt"	# episode01.srt
 					info "filename | ${filename}"
 					#
-					# copy srt files at video files level
+					# copy srt files at video files level or just print
 					#
 					if [ "${2^^}" == RUN ]
 					then
