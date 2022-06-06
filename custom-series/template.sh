@@ -54,7 +54,7 @@ then
 				# ${subsdir} : /path/to/tv-serie-folder/01/season-1/episode01
 				# */         : 2_English.srt
 				#
-				# TODO: stop at first or add counter
+				# TODO: stop at first or add counter OR get the biggest
 				#
 				for srtfile in "${subsdir}"/*.srt
 				do
