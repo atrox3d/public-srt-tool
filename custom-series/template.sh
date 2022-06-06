@@ -44,13 +44,13 @@ then
 			# loop through subtitles subdirs
 			# ${season}/ : /path/to/tv-serie-folder/01/season-1/
 			# Subs/      : Subs/
-			# */         : season-1/
+			# */         : episode01/
 			#
 			for subsdir in "${season}"/[Ss]ubs/*/
 			do
 				info "subsdir | ${subsdir}"
 				#
-				# loop through srtfiles
+				# loop through srt files
 				# ${subsdir} : /path/to/tv-serie-folder/01/season-1/episode01
 				# */         : 2_English.srt
 				#
