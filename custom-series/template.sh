@@ -73,5 +73,7 @@ then
 		info popd
 		popd  &> /dev/null
 	done
+else
+	fatal "syntax | ${NAME} path"
 fi
 
