@@ -80,25 +80,22 @@ then
 				done
 				
 				srtfile="${filename}"
-				# for srtfile in "${subsdir}"/*.srt
-				# do
-					info "srtfile | ${srtfile}"				# 2_English.srt
-					filename="$(basename "${subsdir}").srt"	# episode01.srt
-					info "filename | ${filename}"
-					#
-					# copy srt files at video files level or just print
-					#
-					if [ "${2^^}" == RUN ]
-					then
-						info "RUN | cp ${srtfile} ${season}/${filename}"
-						cp "${srtfile}" "${season}/${filename}" || {
-							fatal "error copying"
-							exit 255
-						}
-					else
-						info "PRINT | cp ${srtfile} ${season}/${filename}"
-					fi
-				# done
+				info "srtfile | ${srtfile}"				# 2_English.srt
+				filename="$(basename "${subsdir}").srt"	# episode01.srt
+				info "filename | ${filename}"
+				#
+				# copy srt files at video files level or just print
+				#
+				if [ "${2^^}" == RUN ]
+				then
+					info "RUN | cp ${srtfile} ${season}/${filename}"
+					cp "${srtfile}" "${season}/${filename}" || {
+						fatal "error copying"
+						exit 255
+					}
+				else
+					info "PRINT | cp ${srtfile} ${season}/${filename}"
+				fi
 				shopt -u nullglob		# OFF | expand no match to null string
 				shopt -u nocaseglob		# OFF | expand case insensitive
 			done
