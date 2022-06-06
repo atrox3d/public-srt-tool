@@ -62,13 +62,13 @@ then
 				#
 				shopt -s nullglob			# ON | expand no match to null string
 				shopt -s nocaseglob			# ON | expand case insensitive
-				subtitles=( *english*.srt )	# capture srt files in array
+				subtitles=( "${subsdir}"/*english*.srt )	# capture srt files in array
 				filename=""
 				filesize=0
 				debug "subtitles: ${subtitles[@]}"
 				for _filename in "${subtitles[@]}"
 				do
-					_filesize=$(stat -c %s "${filename}")	# get current file size
+					_filesize=$(stat -c %s "${_filename}")	# get current file size
 					debug "filename : ${filename}"
 					debug "filesize : ${filesize}"
 					debug "_filename: ${_filename}"
@@ -79,8 +79,9 @@ then
 					}
 				done
 				
-				for srtfile in "${subsdir}"/*.srt
-				do
+				srtfile="${filename}"
+				# for srtfile in "${subsdir}"/*.srt
+				# do
 					info "srtfile | ${srtfile}"				# 2_English.srt
 					filename="$(basename "${subsdir}").srt"	# episode01.srt
 					info "filename | ${filename}"
@@ -97,7 +98,7 @@ then
 					else
 						info "PRINT | cp ${srtfile} ${season}/${filename}"
 					fi
-				done
+				# done
 				shopt -u nullglob		# OFF | expand no match to null string
 				shopt -u nocaseglob		# OFF | expand case insensitive
 			done
