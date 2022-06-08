@@ -24,7 +24,7 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 logger_setlevel info
-# logger_setlevel debug
+logger_setlevel debug
 #
 # check params
 #
@@ -43,7 +43,7 @@ then
 	shopt -s nocaseglob					# ON | expand case insensitive
 	OIFS="$IFS"							# save IFS
 	IFS=$'\n'							# set IFS to newline
-		SUBSDIR=( "${MOVIEDIR}"/subs/ )	# glob subs directory into array
+		SUBSDIR=( "${MOVIEDIR}"/*subs/ )	# glob subs directory into array
 		# if [ -d "${MOVIEDIR}"/subs ]
 		# then
 			# SUBDIR="${MOVIEDIR}"/subs
