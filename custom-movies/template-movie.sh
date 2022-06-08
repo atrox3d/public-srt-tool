@@ -124,7 +124,7 @@ then
 	movie="${movies[0]}"
 	info "MOVIE | ${movie}"
 	
-	filename="${movie%.*}.srt"	# episode01.srt
+	filename="$(basename "${movie%.*}.srt")"	# episode01.srt
 	info "srtfile  | ${srtfile}"
 	info "filename | ${filename}"
 	#
