@@ -23,7 +23,8 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 } 2> /dev/null
 
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
-logger_setlevel debug
+logger_setlevel info
+# logger_setlevel debug
 #
 # check params
 #
@@ -42,11 +43,17 @@ then
 	shopt -s nocaseglob					# ON | expand case insensitive
 	OIFS="$IFS"							# save IFS
 	IFS=$'\n'							# set IFS to newline
-		SUBSDIR=( "${1}"/[Ss]ubs/* )	# glob subs directory into array
-		
+		SUBSDIR=( "${MOVIEDIR}"/subs/ )	# glob subs directory into array
+		# if [ -d "${MOVIEDIR}"/subs ]
+		# then
+			# SUBDIR="${MOVIEDIR}"/subs
+		# elif
+			# [ -d "${MOVIEDIR}"/subs ]
+		# fi
 		debug "SUBSDIR    | ${SUBSDIR}"
 		debug "SUBSDIR[@] | ${SUBSDIR[@]}"
 		debug "SUBSDIR#   | ${#SUBSDIR[@]}"
+		# exit
 		for sd in "${SUBSDIR[@]}"		# loop through directories
 		do
 			debug "SUBSDIR[] | ${sd}"
@@ -64,25 +71,18 @@ then
 			warn "exiting"
 			exit
 		}
-		SUBSDIR="$(dirname ${SUBSDIR[0]})"	# save it using IFS
+		SUBSDIR="${SUBSDIR[0]}"	# save it using IFS
 	IFS="$OIFS"
 	info "found '${SUBSDIR}'"
-	#
-	# loop through srt files
-	# ${SUBSDIR} : /path/to/tv-serie-folder/01/season-1/episode01
-	# */         : 2_English.srt
-	#
-	# TODO: stop at first or add counter 
-	#
-	#	OR
-	#
-	#		get the biggest
-	#
-	subtitles=( "${SUBSDIR}"/{*english*,subs}.srt )	# capture srt files in array
-	filename=""
-	filesize=0
+
+	debug "subtitles pattern: ${SUBSDIR}/*english*.srt"
+	subtitles=( "${SUBSDIR}"/*english*.srt )	# capture srt files in array
+	debug "subtitles pattern: ${SUBSDIR}/*subs*.srt"
+	subtitles+=( "${SUBSDIR}"/*subs*.srt )	# capture srt files in array
 	debug "subtitles: ${subtitles[@]}"
 	debug "#subtitles: ${#subtitles[@]}"
+	filename=""
+	filesize=0
 	[ ${#subtitles[@]} -gt 0 ] || {
 		warn "no subtitles found in '${SUBSDIR}'"
 		warn "exiting"
@@ -90,10 +90,16 @@ then
 	}
 	for _filename in "${subtitles[@]}"
 	do
-		_filesize=$(stat -c %s "${_filename}")	# get current file size
 		debug "filename : ${filename}"
 		debug "filesize : ${filesize}"
+		
 		debug "_filename: ${_filename}"
+		debug "_filesize=\$(stat -c %s \"${_filename}\")"	# get current file size
+		_filesize=$(stat -c %s "${_filename}")	# get current file size
+		[ $? -eq 0 ] || {
+			fatal "cannot stat '${filename}'"
+			exit 255
+		}
 		debug "_filesize: ${_filesize}"
 		[ ${_filesize} -gt ${filesize} ] && {	# if bigger
 			filename="${_filename}"				# update filename
