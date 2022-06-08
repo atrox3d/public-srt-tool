@@ -1,4 +1,6 @@
 #!/bin/bash
+# for d in /e/VIDEO/film\ ENG/*/;do ./template-movie.sh "${d}" run;[ $? -eq 0 ] || break;done
+
 
 # get current path
 HERE="$(dirname ${BASH_SOURCE[0]})"
@@ -25,6 +27,7 @@ logger_setlevel debug
 # check params
 #
 info "PARAMS | ${@}"
+
 if [ ${#} -gt 0 ]
 then
 	MOVIEDIR="${1}"
@@ -39,9 +42,9 @@ then
 
 	SUBSDIR=( "${1}"/subs/ )			# glob subs directory into array
 	
-	debug "SUBSDIR  | ${SUBSDIR}"
-	debug "SUBSDIR  | ${SUBSDIR[@]}"
-	debug "SUBSDIR# | ${#SUBSDIR[@]}"
+	debug "SUBSDIR    | ${SUBSDIR}"
+	debug "SUBSDIR[@] | ${SUBSDIR[@]}"
+	debug "SUBSDIR#   | ${#SUBSDIR[@]}"
 	
 	[ ${#SUBSDIR[@]} -gt 0 ] || {		# check if exists
 		fatal "cannot find ${1}/subs/"
@@ -77,10 +80,15 @@ then
 		}
 	done
 	
+	[ "${filename:-NOTFOUND}" == NOTFOUND ] || {
+		warn "no subtittles found"
+		exit
+	}
+	
 	srtfile="${filename}"
 	info "srtfile | ${srtfile}"					# 2_English.srt
 	
-	movies=( "${MOVIEDIR}"/*.m* )
+	movies=( "${MOVIEDIR}"/*.{mp4,mp5,avi,mkv} )
 	[ ${#movies[@]} -eq 1 ] || {
 		fatal "no movies or too many movies:"
 		for movie in "${movies[@]}"
@@ -93,19 +101,20 @@ then
 	info "MOVIE | ${movie}"
 	
 	filename="${movie%.*}.srt"	# episode01.srt
+	info "srtfile  | ${srtfile}"
 	info "filename | ${filename}"
 	#
 	# copy srt files at video files level or just print
 	#
 	if [ "${2^^}" == RUN ]
 	then
-		info "RUN | cp ${srtfile} ${season}/${filename}"
-		cp "${srtfile}" "${season}/${filename}" || {
+		info "RUN | cp ${srtfile} ${MOVIEDIR}/${filename}"
+		cp "${srtfile}" "${MOVIEDIR}/${filename}" || {
 			fatal "error copying"
 			exit 255
 		}
 	else
-		info "PRINT | cp ${srtfile} ${season}/${filename}"
+		info "PRINT | cp ${srtfile} ${MOVIEDIR}/${filename}"
 	fi
 	shopt -u nullglob		# OFF | expand no match to null string
 	shopt -u nocaseglob		# OFF | expand case insensitive
