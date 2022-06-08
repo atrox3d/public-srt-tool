@@ -1,5 +1,6 @@
 #!/bin/bash
 # for d in /e/VIDEO/film\ ENG/*/;do ./template-movie.sh "${d}" run;[ $? -eq 0 ] || break;done
+# for d in /e/VIDEO/film\ ENG/*/;do ./template-movie.sh "${d}";[ $? -eq 0 ] || break;done
 
 
 # get current path
@@ -39,19 +40,33 @@ then
 
 	shopt -s nullglob					# ON | expand no match to null string
 	shopt -s nocaseglob					# ON | expand case insensitive
+	OIFS="$IFS"							# save IFS
+	IFS=$'\n'							# set IFS to newline
+		SUBSDIR=( "${1}"/[Ss]ubs/* )	# glob subs directory into array
+		
+		debug "SUBSDIR    | ${SUBSDIR}"
+		debug "SUBSDIR[@] | ${SUBSDIR[@]}"
+		debug "SUBSDIR#   | ${#SUBSDIR[@]}"
+		for sd in "${SUBSDIR[@]}"		# loop through directories
+		do
+			debug "SUBSDIR[] | ${sd}"
+			debug "DIRNAME   | $(dirname "${sd}")"
+		done
+		
+		[ ${#SUBSDIR[@]} -gt 0 ] || {	# check if at least one exists
+			warn "cannot find ${1}/[Ss]ubs/"
+			warn "exiting"
+			exit
+		}
 
-	SUBSDIR=( "${1}"/subs/ )			# glob subs directory into array
-	
-	debug "SUBSDIR    | ${SUBSDIR}"
-	debug "SUBSDIR[@] | ${SUBSDIR[@]}"
-	debug "SUBSDIR#   | ${#SUBSDIR[@]}"
-	
-	[ ${#SUBSDIR[@]} -gt 0 ] || {		# check if exists
-		fatal "cannot find ${1}/subs/"
-		exit 255
-	}
-	SUBSDIR="${SUBSDIR[0]}"				# save it
-	info "found ${SUBSDIR}"
+		[ ${#SUBSDIR[@]} -gt 1 ] && {	# check only one exists
+			warn "too many directories ${1}/[Ss]ubs/"
+			warn "exiting"
+			exit
+		}
+		SUBSDIR="$(dirname ${SUBSDIR[0]})"	# save it using IFS
+	IFS="$OIFS"
+	info "found '${SUBSDIR}'"
 	#
 	# loop through srt files
 	# ${SUBSDIR} : /path/to/tv-serie-folder/01/season-1/episode01
@@ -63,10 +78,16 @@ then
 	#
 	#		get the biggest
 	#
-	subtitles=( "${SUBSDIR}"/*english*.srt )	# capture srt files in array
+	subtitles=( "${SUBSDIR}"/{*english*,subs}.srt )	# capture srt files in array
 	filename=""
 	filesize=0
 	debug "subtitles: ${subtitles[@]}"
+	debug "#subtitles: ${#subtitles[@]}"
+	[ ${#subtitles[@]} -gt 0 ] || {
+		warn "no subtitles found in '${SUBSDIR}'"
+		warn "exiting"
+		exit
+	}
 	for _filename in "${subtitles[@]}"
 	do
 		_filesize=$(stat -c %s "${_filename}")	# get current file size
@@ -76,17 +97,20 @@ then
 		debug "_filesize: ${_filesize}"
 		[ ${_filesize} -gt ${filesize} ] && {	# if bigger
 			filename="${_filename}"				# update filename
-			filesize=${filesize}				# update filesize
+			filesize=${_filesize}				# update filesize
 		}
 	done
 	
-	[ "${filename:-NOTFOUND}" == NOTFOUND ] || {
-		warn "no subtittles found"
+	debug "filename : ${filename}"
+	debug "filesize : ${filesize}"
+	debug "notfound : ${filename:-NOTFOUND}"
+	[ "${filename:-NOTFOUND}" == NOTFOUND ] && {
+		warn "no subtitles found"
 		exit
 	}
 	
 	srtfile="${filename}"
-	info "srtfile | ${srtfile}"					# 2_English.srt
+	info "srtfile | ''${srtfile}'"					# 2_English.srt
 	
 	movies=( "${MOVIEDIR}"/*.{mp4,mp5,avi,mkv} )
 	[ ${#movies[@]} -eq 1 ] || {
@@ -108,13 +132,17 @@ then
 	#
 	if [ "${2^^}" == RUN ]
 	then
-		info "RUN | cp ${srtfile} ${MOVIEDIR}/${filename}"
+		info "RUN command | cp "
+		info "RUN src     | ${srtfile}"
+		info "RUN dst     | ${MOVIEDIR}/${filename}"
 		cp "${srtfile}" "${MOVIEDIR}/${filename}" || {
 			fatal "error copying"
 			exit 255
 		}
 	else
-		info "PRINT | cp ${srtfile} ${MOVIEDIR}/${filename}"
+		info "PRINT command | cp "
+		info "PRINT src     | ${srtfile}"
+		info "PRINT dst     | ${MOVIEDIR}/${filename}"
 	fi
 	shopt -u nullglob		# OFF | expand no match to null string
 	shopt -u nocaseglob		# OFF | expand case insensitive
