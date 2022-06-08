@@ -92,8 +92,7 @@ then
 	movie="${movies[0]}"
 	info "MOVIE | ${movie}"
 	
-	exit
-	filename="$(basename "${MOVIEDIR}").srt"	# episode01.srt
+	filename="${movie%.*}.srt"	# episode01.srt
 	info "filename | ${filename}"
 	#
 	# copy srt files at video files level or just print
