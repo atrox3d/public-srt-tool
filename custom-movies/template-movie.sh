@@ -24,7 +24,7 @@ HERE="$(dirname ${BASH_SOURCE[0]})"
 
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 logger_setlevel info
-logger_setlevel debug
+# logger_setlevel debug
 #
 # check params
 #
@@ -116,7 +116,7 @@ then
 	}
 	
 	srtfile="${filename}"
-	info "srtfile | ''${srtfile}'"					# 2_English.srt
+	info "srtfile | '${srtfile}'"					# 2_English.srt
 	
 	movies=( "${MOVIEDIR}"/*.{mp4,mp5,avi,mkv} )
 	[ ${#movies[@]} -eq 1 ] || {
