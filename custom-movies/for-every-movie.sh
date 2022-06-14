@@ -56,8 +56,14 @@ info "RUN    | ${RUN}"
 #
 for movie_folder in "${WORKDIR}"/*/
 do
+	#
+	#	run script for current movie subfolder
+	#
 	info "${HERE}"/template-movie.sh "${movie_folder}" "${RUN}"
 	"${HERE}"/template-movie.sh "${movie_folder}" "${RUN}"
+	#
+	#	save and process exit code
+	#
 	EXITCODE=$?
 	info "template-movie.sh | EXITCODE | ${EXITCODE}"
 	[ $? -eq 0 ] || {
