@@ -61,8 +61,8 @@ then
 		done
 		
 		[ ${#SUBSDIR[@]} -gt 0 ] || {	# check if at least one exists
-			warn "cannot find ${1}/[Ss]ubs/"
-			warn "exiting"
+			error "cannot find ${1}/[Ss]ubs/"
+			error "exiting"
 			exit
 		}
 
@@ -139,8 +139,8 @@ then
 	debug "diff exit code: ${diff_exitcode}"
 	if [ ${diff_exitcode} -eq 0 ]
 	then
-		warn "subtitle already exist: ${MOVIEDIR}/${filename}"
-		warn "no op"
+		warn "NOOP | subtitle already exist"
+		warn "NOOP | ${MOVIEDIR}/${filename}"
 	else
 		#
 		# copy srt files at video files level or just print
