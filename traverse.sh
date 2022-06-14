@@ -11,7 +11,7 @@ echo "HERE | ${HERE}"
 for here in "${HERE}" .. ../lib .
 do
 	echo "TRY | . ${here}/logger.include"
-	if . "${here}/logger.include"
+	if . "${here}/logger.include" &> /dev/null
 	then
 		OK=OK
 		info "OK | sourced ${here}/logger.include"
@@ -23,7 +23,6 @@ done
 	echo "FATAL | cannot find logger.include"
 	exit 255
 }
-exit
 #
 # source logger
 #
