@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # get current path
 HERE="$(dirname ${BASH_SOURCE[0]})"
 echo "HERE | ${HERE}"
