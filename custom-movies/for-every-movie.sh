@@ -1,9 +1,30 @@
 #!/bin/bash
 # for movie_folder in /e/VIDEO/film\ ENG/*/;do ./template-movie.sh "${movie_folder}" run;[ $? -eq 0 ] || break;done
 
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
+
 # get current path
 HERE="$(dirname ${BASH_SOURCE[0]})"
+OK=KO
 echo "HERE | ${HERE}"
+for here in "${HERE}" .. ../lib .
+do
+	echo "TRY | . ${here}/logger.include"
+	if . "${here}/logger.include"
+	then
+		OK=OK
+		info "OK | sourced ${here}/logger.include"
+		break
+	fi
+done
+
+[ "${OK}" == OK ] || {
+	echo "FATAL | cannot find logger.include"
+	exit 255
+}
+exit
 #
 # source logger
 #
@@ -21,6 +42,11 @@ echo "HERE | ${HERE}"
 HERE="$(dirname ${BASH_SOURCE[0]})"
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 logger_setlevel info
+
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
+
 #
 #	syntax check
 #
