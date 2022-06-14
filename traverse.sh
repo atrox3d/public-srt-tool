@@ -1,17 +1,32 @@
 #!/bin/bash
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
 
 # get current path
 HERE="$(dirname ${BASH_SOURCE[0]})"
-
-# save parameters and reset them
-# ARGS=( "${@}" )
-# set --
-
+echo "HERE | ${HERE}"
+#
 # source logger
-. "${HERE}/logger.include"
+#
+{
+	. "${HERE}/logger.include" || {
+		. "${HERE}/../logger.include" || {
+			echo "FATAL | cannot find logger.include"
+			exit 255
+		}
+	}
+} 2> /dev/null
+#
+#	setup variables and log level
+#
+HERE="$(dirname ${BASH_SOURCE[0]})"
+NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
+logger_setlevel info
 
-# save this script name
-NAME="$(basename ${BASH_SOURCE[0]})"
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
 
 #
 #	traverse path function/script args

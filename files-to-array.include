@@ -1,18 +1,37 @@
 #!/bin/bash
 
-# get current path
-HERE="$(dirname ${BASH_SOURCE[0]})"
-
 # save parameters and reset them
 ARGS=( "${@}" )
 PARAM="${1}"
 set --
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
 
+# get current path
+HERE="$(dirname ${BASH_SOURCE[0]})"
+echo "HERE | ${HERE}"
+#
 # source logger
-. "${HERE}/logger.include"
+#
+{
+	. "${HERE}/logger.include" || {
+		. "${HERE}/../logger.include" || {
+			echo "FATAL | cannot find logger.include"
+			exit 255
+		}
+	}
+} 2> /dev/null
+#
+#	setup variables and log level
+#
+HERE="$(dirname ${BASH_SOURCE[0]})"
+NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
+logger_setlevel info
 
-# save this script name
-NAME="$(basename ${BASH_SOURCE[0]})"
+#-----------------------------------------------------------------------------
+# boilerplate.sh
+#-----------------------------------------------------------------------------
 
 
 function join_by { local IFS="${1}"; shift; echo "$*"; }
