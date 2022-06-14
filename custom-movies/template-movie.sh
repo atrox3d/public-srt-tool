@@ -133,22 +133,32 @@ then
 	filename="$(basename "${movie%.*}.srt")"	# episode01.srt
 	info "srtfile  | ${srtfile}"
 	info "filename | ${filename}"
-	#
-	# copy srt files at video files level or just print
-	#
-	if [ "${2^^}" == RUN ]
+	
+	diff "${srtfile}" "${MOVIEDIR}/${filename}" &>/dev/null
+	diff_exitcode=$?
+	debug "diff exit code: ${diff_exitcode}"
+	if [ ${diff_exitcode} -eq 0 ]
 	then
-		info "RUN command | cp "
-		info "RUN src     | ${srtfile}"
-		info "RUN dst     | ${MOVIEDIR}/${filename}"
-		cp "${srtfile}" "${MOVIEDIR}/${filename}" || {
-			fatal "error copying"
-			exit 255
-		}
+		warn "subtitle already exist: ${MOVIEDIR}/${filename}"
+		warn "no op"
 	else
-		info "PRINT command | cp "
-		info "PRINT src     | ${srtfile}"
-		info "PRINT dst     | ${MOVIEDIR}/${filename}"
+		#
+		# copy srt files at video files level or just print
+		#
+		if [ "${2^^}" == RUN ]
+		then
+			info "RUN command | cp "
+			info "RUN src     | ${srtfile}"
+			info "RUN dst     | ${MOVIEDIR}/${filename}"
+			cp "${srtfile}" "${MOVIEDIR}/${filename}" || {
+				fatal "error copying"
+				exit 255
+			}
+		else
+			info "PRINT command | cp "
+			info "PRINT src     | ${srtfile}"
+			info "PRINT dst     | ${MOVIEDIR}/${filename}"
+		fi
 	fi
 	shopt -u nullglob		# OFF | expand no match to null string
 	shopt -u nocaseglob		# OFF | expand case insensitive
