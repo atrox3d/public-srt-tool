@@ -1,0 +1,28 @@
+#!/bin/bash
+
+echo \# running ./logger.include info testing testing
+./logger.include info testing testing
+
+echo \# sourcing ./logger.include
+. ./logger.include info testing testing
+info "sourced"
+
+###############################################################
+
+echo \# running ./files.include . sh
+./files.include . sh
+
+echo \# sourcing ./files.include . sh
+. ./files.include . sh
+info "sourced"
+countfiles . sh
+
+###############################################################
+
+echo \# running ./files-to-array.sh . sh
+./files-to-array.sh . sh
+
+echo \# sourcing ./files-to-array.sh . sh
+. ./files-to-array.sh . sh
+info "sourced"
+getfileslist . , sh
