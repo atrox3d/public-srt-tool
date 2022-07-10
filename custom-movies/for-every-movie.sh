@@ -66,6 +66,9 @@ else
 	#
 	[ -d "${WORKDIR}" ] || {
 		fatal "WORKDIR DOES NOT EXIST | ${WORKDIR}"
+		echo
+		echo
+		echo
 		exit 255
 	}
 fi
@@ -91,6 +94,9 @@ do
 	#
 	EXITCODE=$?
 	info "template-movie.sh | EXITCODE | ${EXITCODE}"
+	echo
+	echo
+	echo
 	[ $? -eq 0 ] || {
 		info read -p "continue (S/N)?" CONTINUE
 		read -p "continue (S/N)?" CONTINUE
