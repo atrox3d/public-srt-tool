@@ -11,7 +11,7 @@
 HERE="$(dirname ${BASH_SOURCE[0]})"
 OK=KO
 echo "HERE | ${HERE}"
-for here in "${HERE}" .. ../lib .
+for here in "${HERE}" "${HERE}"/.. "${HERE}"/../lib .
 do
 	echo "TRY | . ${here}/logger.include"
 	if . "${here}/logger.include" &> /dev/null
